@@ -1,16 +1,23 @@
-import React from 'react'
-import logo from '../../../../assets/imgs/auth-logo.png'
+import React ,{useEffect, useState}from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export default function ResetPass() {
-  let {register,formState:{errors},handleSubmit} = useForm();
+  let {register,setValue,formState:{errors},handleSubmit} = useForm();
   let navigate = useNavigate();
+  let [isLoading ,setIsLoading]=useState(false);
+  let [storedEmail, setStoredEmail]=useState('')
+  let [showPassword,setShowPassword]=useState(false);
+
+  const togglePasswordVisibility =()=>{
+    setShowPassword(prevState =>! prevState)
+  }
 
   const onSubmit =async(data)=>{
       try{
+         setIsLoading(true)
           let response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Reset',data)
           toast.success('Password changed successfully')
           navigate('/login')
@@ -18,6 +25,12 @@ export default function ResetPass() {
         toast.error(error.response.data.message)
       }
   }
+  useEffect(()=>{// populate the email from prevoius step
+    setStoredEmail(sessionStorage.getItem('email'))
+    if(storedEmail){
+      setValue('email',storedEmail)
+    }
+  },[storedEmail,setValue])
 
   return (  
             <>
@@ -34,6 +47,7 @@ export default function ResetPass() {
                     type="text" 
                     className="form-control" 
                     placeholder="Enter your E-mail" 
+                    defaultValue={storedEmail}
                     aria-label="email" 
                     aria-describedby="basic-addon1"
                     {...register('email',{
@@ -62,13 +76,13 @@ export default function ResetPass() {
                     />
                 </div>
                 {errors.seed&&<span className='text-danger '>{errors.seed.message}</span>}
-                <div className="input-group mt-3">
+                <div className="input-group mt-3 ">
                   <span className="input-group-text" id="basic-addon1">
-                     <i className="fa fa-lock" aria-hidden="true"></i>
+                     <i className="fa fa-lock " aria-hidden="true"></i>
                   </span>
                   <input 
-                    type="password" 
-                    className="form-control" 
+                    type={showPassword?"text":"password" }
+                    className="form-control border-right-0" 
                     placeholder="New Password" 
                     aria-label="password" 
                     aria-describedby="basic-addon1"
@@ -76,6 +90,9 @@ export default function ResetPass() {
                       required:'New password is required'
                     })}
                     />
+                    <span className="input-group-text" id="basic-addon1">
+                      <i onClick={togglePasswordVisibility} className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}></i>
+                    </span>
                 </div>
                 {errors.password&&<span className='text-danger '>{errors.password.message}</span>}
                 <div className="input-group mt-3">
@@ -83,18 +100,26 @@ export default function ResetPass() {
                      <i className="fa fa-lock" aria-hidden="true"></i>
                   </span>
                   <input 
-                    type="password" 
+                    type={showPassword?"text":"password" }
                     className="form-control" 
                     placeholder="Confirm New Password" 
-                    aria-label="password" 
+                    aria-label="confirm password" 
                     aria-describedby="basic-addon1"
                     {...register('confirmPassword',{
                       required:'Confirm password is required'
                     })}
                     />
+                    <span className="input-group-text" id="basic-addon1">
+                      <i onClick={togglePasswordVisibility} className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}></i>
+                    </span>
                 </div>
                 {errors.confirmPassword&&<span className='text-danger '>{errors.confirmPassword.message}</span>}
-                <button className='btn btn-success w-100 text-white rounded rounded-2 border-0 my-3 py-2'>Reset Password</button>
+                <button
+                  className='btn btn-success w-100 text-white rounded rounded-2 border-0 my-3 py-2'
+                  disabled={isLoading}
+                >
+                    {isLoading?'...Loading':'Reset Password'}
+                </button>
               </form>
             </>
   )

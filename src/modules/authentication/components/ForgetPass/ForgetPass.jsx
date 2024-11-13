@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios';
@@ -7,12 +7,15 @@ import { toast } from 'react-toastify';
 export default function ForgetPass() {
   let {register,formState:{errors},handleSubmit} = useForm();
   let navigate = useNavigate();
+  let [isLoading ,setIsLoading]=useState(false);
 
   const onSubmit =async(data)=>{
       try{
+          setIsLoading(true)
           let response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Reset/Request',data)
+          sessionStorage.setItem('email',data.email)
           toast.success('Please enter your new password')
-          navigate('/reset-pass')
+          navigate('/reset-password')
       }catch(error){
         toast.error(error.response.data.message)
       }
@@ -45,7 +48,12 @@ export default function ForgetPass() {
                     />
                 </div>
                 {errors.email&&<span className='text-danger '>{errors.email.message}</span>}
-                <button className='btn btn-success w-100 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'>Submit</button>
+                <button 
+                   className='btn btn-success w-100 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
+                    disabled={isLoading}
+                >
+                  {isLoading?'...Loading':'Submit'}
+                </button>
               </form>
             </>
   )

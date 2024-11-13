@@ -16,30 +16,51 @@ import RecipesData from './modules/recipes/components/RecipesData/RecipesData'
 import CategoryData from './modules/categories/components/CategoryData/CategoryData'
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect, useState } from 'react'
+import { jwtDecode } from 'jwt-decode'
+import ProtectedRoute from './modules/shared/components/ProtectedRoute/ProtectedRoute'
 
 
 function App() {
+
+  const[loginData,setLoginData]=useState(null);
+  let saveLoginData = ()=>{
+    let decodedToken = localStorage.getItem('token');
+    let encodedToken = jwtDecode(decodedToken);
+    setLoginData(encodedToken)
+  }
+
+  useEffect(()=>{
+    if(localStorage.getItem('token')) //if logged in
+    saveLoginData()
+    console.log(loginData)
+  },[])
+
   const routes = createBrowserRouter([
     {
       path:'',
       element:<AuthLayout/>,
       errorElement:<NotFound/>,
       children:[
-        {index:true,element:<Login/>},
-        {path:'login',element:<Login/>},
+        {index:true,element:<Login saveLoginData={saveLoginData}/>},
+        {path:'login',element:<Login saveLoginData={saveLoginData}/>},
         {path:'register',element:<Registeration/>},
-        {path:'forget-pass',element:<ForgetPass/>},
-        {path:'reset-pass',element:<ResetPass/>},
-        {path:'change-pass',element:<ChangePass/>}
+        {path:'forget-password',element:<ForgetPass/>},
+        {path:'reset-password',element:<ResetPass/>},
+        {path:'change-password',element:<ChangePass/>}
         
       ]
     },
     {
       path:'/dashboard',
-      element:<MasterLayout/>,
+      element:(
+        <ProtectedRoute loginData={loginData}>
+          <MasterLayout loginData={loginData}/>
+        </ProtectedRoute>
+      ),
       errorElement:<NotFound/>,
       children:[
-        {index:true,element:<Dashboard/>},
+        {index:true,element:<Dashboard loginData={loginData}/>},
         {path:'recipes',element:<RecipesList/>},
         {path:'recipe-data',element:<RecipesData/>},
         {path:'categories',element:<CategoryList/>},
@@ -49,6 +70,7 @@ function App() {
       ]
     }]
   )
+
   return (
     <>
     <ToastContainer/>

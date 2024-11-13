@@ -1,8 +1,75 @@
 .auth-container{
-    background-image: url(./assets/imgs/auth-bg.png);
+    background-image: url('./assets/imgs/auth-bg.png');
     background-position: center center;
     background-size: cover;
 }
 .overlay{
     background-image: linear-gradient(51.22deg, rgba(47, 140, 96, 0.63) -22.39%, rgba(0, 0, 0, 0.6237) 61.76%);;
 }
+
+.sidebar-container .ps-sidebar-container{
+    background-color: #1F263E;
+    color: white;
+    padding-top: 30px;
+    border-radius:0 60px 0 0 ;
+    height: 100vh;
+}
+
+.sidebar-container .ps-menu-button{
+    padding-left: 30px !important;
+}
+.sidebar-container .ps-menu-icon{
+    margin-right: 20px;
+}
+
+.sidebar-container .ps-sidebar-root{
+    border: none;
+}
+
+.sidebar-container .logo-menu-item .ps-menu-button{
+    margin-left: 40px;
+    img{
+        width:170px;
+    }
+    
+   }
+   .sidebar-container .logo-menu-item-colapsed .ps-menu-button{
+    img{
+        width:90px;   
+    }
+   }
+.sidebar-container .logo-menu-item-colapsed .ps-menu-button:hover{
+    background-color: transparent !important;
+}
+
+
+.sidebar-container .logo-menu-item .ps-menu-button:hover{
+    background-color: transparent !important;
+   }
+   
+.sidebar-container .ps-menu-button:hover{
+    background-color: #00924D1A !important;
+
+}
+.header-container{
+    background-image: url('./assets/imgs/header-bg.svg'),linear-gradient( #009247,#009247);
+    background-position: center center;
+    background-size: cover;
+    margin-top: 20px;
+    color: white;
+    padding: 0 50px;
+    border-radius: 15px;
+}
+.table-head{ 
+     --bs-table-bg: #E2E5EB !important;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.table-head th:first-child{
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+} 
+.table-head th:last-child{
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+} 

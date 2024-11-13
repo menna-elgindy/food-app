@@ -1,17 +1,24 @@
-import React from 'react'
+import React ,{useState}from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 
-export default function Login() {
+export default function Login({saveLoginData}) {
   let {register,formState:{errors},handleSubmit} = useForm();
   let navigate = useNavigate();
+  let [showPassword,setShowPassword]=useState(false);
+
+  const togglePasswordVisibility =()=>{
+    setShowPassword(prevState =>! prevState)
+  }
 
   const onSubmit =async(data)=>{
       try{
           let response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Login',data)
+          localStorage.setItem('token',response.data.token)
+          saveLoginData()
           toast.success('Login successfully')
           navigate('/dashboard')
       }catch(error){
@@ -52,7 +59,7 @@ export default function Login() {
                      <i className="fa fa-lock" aria-hidden="true"></i>
                   </span>
                   <input 
-                    type="password" 
+                    type={showPassword?"text":"password" }
                     className="form-control" 
                     placeholder="Enter your Password" 
                     aria-label="password" 
@@ -61,11 +68,14 @@ export default function Login() {
                       required:'password is required'
                     })}
                     />
+                    <span className="input-group-text" id="basic-addon1">
+                      <i onClick={togglePasswordVisibility} className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}></i>
+                    </span>
                 </div>
                 {errors.password&&<span className='text-danger '>{errors.password.message}</span>}
                 <div className='links d-flex justify-content-between mt-3'>
                   <Link to='/register' className='text-decoration-none' style={{'color':'#3A3A3D'}}>Register Now?</Link>
-                  <Link to='/forget-pass' className='text-decoration-none text-success'>Forgot Password?</Link>
+                  <Link to='/forget-password' className='text-decoration-none text-success'>Forgot Password?</Link>
                 </div>
                 <button className='btn btn-success w-100 text-white rounded rounded-2 border-0 my-3 py-2'>Login</button>
               </form>
