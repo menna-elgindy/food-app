@@ -1,10 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
-import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import DeleteImg from '../../../../assets/imgs/delete-img.svg'
+import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
+import { axiosInstance, RECIPE_URL } from '../../../../services/urls/urls';
 
 export default function RecipesList() {
   const [recipesItems,setRecipesItems]= useState([]);
@@ -20,9 +18,7 @@ export default function RecipesList() {
   
   const deleteRecipe =async()=>{
     try{
-      let response =await axios.delete(`https://upskilling-egypt.com:3006/api/v1/Recipe/${selectedId}`,{
-        headers:{Authorization:localStorage.getItem('token')}
-    })
+      let response =await axiosInstance.delete(RECIPE_URL.DELETE_RECIPE(selectedId))
       getRecipes()
     }catch(error){
       console.log(error)
@@ -32,8 +28,11 @@ export default function RecipesList() {
 
   let getRecipes = async()=>{
     try{
-      let response= await axios.get('https://upskilling-egypt.com:3006/api/v1/Recipe/?pageSize=10&pageNumber=1',{
-        headers:{Authorization:localStorage.getItem('token')}
+      let response= await axiosInstance.get(RECIPE_URL.GET_RECIPE,{
+        params:{
+          pageSize:10,
+          pageNumber:1
+        }
       })
       console.log(response.data.data)
       setRecipesItems(response.data.data)
@@ -49,35 +48,17 @@ export default function RecipesList() {
   return (
     <>
         <Header
-          title={<span className='fw-bold'>Recipes <span className='fw-normal' style={{color:' #DFE0E0'}}>items</span> </span>}
+          title={<span className='fw-bold'>Recipe <span className='fw-normal' style={{color:' #DFE0E0'}}>items</span> </span>}
           description={'You can now add your items that any user can order it from the Application and you can edit'}
           imageSrc={image}
         />
-                {/*
+                
           <DeleteConfirmation 
             deleteItem={'recipe'}
-            deleteFun={deleterecipe}
-            toggleShow={setShow(true)}
+            deleteFun={deleteRecipe}
+            handleClose={handleClose}
+            show={show}
           /> 
-          */ }
-            <>
-                <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='text-center'>
-                    <img src={DeleteImg}/>
-                    <h5>Delete This recipe ?</h5>
-                    <p className='text-muted'>are you sure you want to delete this item ? if you are sure just click on delete it</p>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={deleteRecipe}>
-                    Delete this item
-                    </Button>
-                </Modal.Footer>
-                </Modal>
-            </>
 
           <div className='d-flex justify-content-between align-items-center mt-2 mx-3'>
             <div>
@@ -90,29 +71,40 @@ export default function RecipesList() {
           </div>
           
           <table className="table table-striped me-2 ">
-            <thead >
-              <tr className="border-light table-head">
+            <thead className="border-light table-head">
+              <tr >
                 <th scope="col">Item Name</th>
                 <th scope="col">Image</th>
                 <th scope="col">Price</th>
                 <th scope="col">Descripton</th>
                 <th scope="col">Tag</th>
                 <th scope="col">Category</th>
-                <th scope="col">Actions</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {recipesItems.map((recipe)=>
                   <tr>
                     <td>{recipe.name}</td>
-                    <td><img src={`https://upskilling-egypt.com:3006/${recipe.imagePath}`}/></td>
+                    <td><img src={`https://upskilling-egypt.com:3006/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/></td>
                     <td>{recipe.price}</td>
                     <td>{recipe.description}</td>
                     <td>{recipe.tag.name}</td>
                     <td>{recipe.category}</td>
                     <td>
-                      <i className="fa fa-trash mx-3 text-danger" onClick={()=>handleShow(recipe.id)} aria-hidden="true"></i>
-                      <i className="fa fa-edit text-warning" aria-hidden="true" ></i>
+                      {/*Actions Dropdown*/}
+                      <div className="dropdown">
+                            <button className="btn btn-light border-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i className="fa-solid fa-ellipsis"></i>
+                            </button>
+                
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
+                              <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
+                              <li onClick={()=>handleShow(recipe.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
+                            </ul>
+                            
+                       </div>
                     </td>
                   </tr>
               )}

@@ -1,3 +1,8 @@
+body{
+    font-family: 'Poppins';
+    color: #1F263E;
+
+}
 .auth-container{
     background-image: url('./assets/imgs/auth-bg.png');
     background-position: center center;
@@ -60,10 +65,25 @@
     padding: 0 50px;
     border-radius: 15px;
 }
+ .btn-close {
+    --bs-btn-close-bg:url('https://cdn2.iconfinder.com/data/icons/thin-line-color-1/21/07-512.png');
+    font-size: 32px;
+    width: 32px;
+}
+.table{
+    --bs-table-border-color: transparent;
+}
 .table-head{ 
-     --bs-table-bg: #E2E5EB !important;
+     --bs-table-bg-type: #E2E5EB !important;
     border-radius: 15px;
     overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 14px;
+}
+.table-head th{
+    padding: 32px; 
+    text-align: center;
 }
 .table-head th:first-child{
     border-top-left-radius: 15px;
@@ -73,3 +93,17 @@
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
 } 
+.table-striped>tbody>tr:nth-of-type(odd)>*{
+    --bs-table-bg-type:white;
+}
+.table-striped>tbody{
+    --bs-table-bg-type:#F8F9FB;
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    padding: 32px; 
+    text-align: center;
+
+}
+

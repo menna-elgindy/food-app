@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
-import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import DeleteImg from '../../../../assets/imgs/delete-img.svg'
-//import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
+import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
+import { axiosInstance, CATEGORY_URLS } from '../../../../services/urls/urls';
 
 
 export default function CategoryList() {
@@ -22,9 +19,7 @@ export default function CategoryList() {
   
   const deleteCategory =async()=>{
     try{
-      let response =await axios.delete(`https://upskilling-egypt.com:3006/api/v1/Category/${selectedId}`,{
-        headers:{Authorization:localStorage.getItem('token')}
-    })
+      let response =await axiosInstance.delete(CATEGORY_URLS.DELETE_CATEGORY(selectedId))
       getCategories()
     }catch(error){
       console.log(error)
@@ -34,8 +29,11 @@ export default function CategoryList() {
 
   let getCategories = async()=>{
     try{
-      let response= await axios.get('https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1',{
-        headers:{Authorization:localStorage.getItem('token')}
+      let response= await axiosInstance.get(CATEGORY_URLS.GET_CATEGORY,{
+        params:{
+          pageSize:10,
+          pageNumber:1
+        }
       })
       console.log(response.data.data)
       setCategoriesItems(response.data.data)
@@ -55,31 +53,14 @@ export default function CategoryList() {
             description={'You can now add your items that any user can order it from the Application and you can edit'}
             imageSrc={image}
           />
-        {/*
+        
           <DeleteConfirmation 
             deleteItem={'Category'}
             deleteFun={deleteCategory}
-            toggleShow={setShow(true)}
+            handleClose={handleClose}
+            show={show}
           /> 
-          */ }
-            <>
-                <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='text-center'>
-                    <img src={DeleteImg}/>
-                    <h5>Delete This Category ?</h5>
-                    <p className='text-muted'>are you sure you want to delete this item ? if you are sure just click on delete it</p>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={deleteCategory}>
-                    Delete this item
-                    </Button>
-                </Modal.Footer>
-                </Modal>
-            </>
+          
 
           <div className='d-flex justify-content-between align-items-center mt-2'>
             <div>
@@ -95,7 +76,7 @@ export default function CategoryList() {
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Descripton</th>
-                <th scope="col">Actions</th>
+                <th scope="col" ></th>
               </tr>
             </thead>
             <tbody>
@@ -104,8 +85,19 @@ export default function CategoryList() {
                     <td>{category.name}</td>
                     <td>{category.creationDate}</td>
                     <td>
-                      <i className="fa fa-trash mx-3 text-danger" onClick={()=>handleShow(category.id)} aria-hidden="true"></i>
-                      <i className="fa fa-edit text-warning" aria-hidden="true" ></i>
+                      {/*Actions Dropdown*/}
+                      <div className="dropdown">
+                            <button className="btn btn-light border-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i className="fa-solid fa-ellipsis"></i>
+                            </button>
+                
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
+                              <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
+                              <li onClick={()=>handleShow(category.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
+                            </ul>
+                            
+                       </div>
                     </td>
                   </tr>
               )}
