@@ -7,7 +7,7 @@ import SideBar from '../Sidebar/Sidebar'
 export default function MasterLayout({loginData}) {
   return (
     <div className='d-flex'>
-        <div ><SideBar/></div>
+        <div className='sidebar-color' ><SideBar/></div>
         <div className='w-100 px-2'> 
             <Navbar loginData={loginData}/>
             <Outlet/>

@@ -3,19 +3,34 @@ import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
 import { axiosInstance, CATEGORY_URLS } from '../../../../services/urls/urls';
+import NoData from '../../../shared/components/NoData/NoData';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { ModalTitle } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 
 export default function CategoryList() {
+  let {register,formState:{errors},handleSubmit} = useForm();
+  let [isLoading ,setIsLoading]=useState(false);
+
   const [categoriesItems,setCategoriesItems]= useState([]);
-  const [selectedId, setSelectedId] =useState(null)
+  const [selectedId, setSelectedId] =useState(null);
+
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
-
   const handleShow = (id) => {
     setSelectedId(id)
     setShow(true);
   }
+
+  const [showAdd, setShowAdd] = useState(false);
+  const handleCloseAdd = () => setShowAdd(false);
+  const handleShowAdd = (id) => {
+    setShowAdd(true);
+  }
+
   
   const deleteCategory =async()=>{
     try{
@@ -41,6 +56,17 @@ export default function CategoryList() {
       console.log(error)
     } 
   }
+  let onSubmit = async(data)=>{
+    try{
+      let response= await axiosInstance.post(CATEGORY_URLS.ADD_CATEGORY,data)
+      console.log(response.data.data)
+      toast.success('Category added successfully')
+      getCategories()
+      handleCloseAdd()
+    }catch(error){
+      console.log(error)
+    } 
+  }
 
   useEffect(()=>{
     getCategories();
@@ -60,7 +86,36 @@ export default function CategoryList() {
             handleClose={handleClose}
             show={show}
           /> 
-          
+          <Modal show={showAdd} onHide={handleCloseAdd} >
+              <Modal.Header closeButton>
+                <ModalTitle>Add category</ModalTitle>
+              </Modal.Header>
+              <Modal.Body style={{borderTop:'none'}}>
+              <form onSubmit={handleSubmit(onSubmit)} style={{height:'250px'}}>
+                <div className="input-group mt-3 " >
+                  <input 
+                    type="text" 
+                    className="form-control  my-2" 
+                    style={{backgroundColor: '#F7F7F7',border:'none'}}
+                    placeholder="Category Name" 
+                    aria-label="name" 
+                    aria-describedby="basic-addon1"
+                    {...register('name',{
+                      required:'Name is required'
+                    })}
+                    />
+                </div>
+                {errors.name&&<span className='text-danger'>{errors.name.message}</span>}
+                <button 
+                   className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
+                   style={{position:'absolute' ,bottom:'24px',right:'24px'}}
+                    disabled={isLoading}
+                >
+                  {isLoading?'...Loading':'Save'}
+                </button>
+              </form>
+              </Modal.Body>
+            </Modal>
 
           <div className='d-flex justify-content-between align-items-center mt-2'>
             <div>
@@ -69,7 +124,7 @@ export default function CategoryList() {
               </h5>
               <p>You can check all details</p>
             </div>
-            <button className='btn btn-success'>Add New Category</button>
+            <button className='btn btn-success'onClick={handleShowAdd}>Add New Category</button>
           </div>
             <table className="table table-striped me-2">
             <thead className=" border-light table-head">
@@ -79,8 +134,8 @@ export default function CategoryList() {
                 <th scope="col" ></th>
               </tr>
             </thead>
-            <tbody>
-              {categoriesItems.map((category)=>
+          <tbody>
+          {categoriesItems.length>0?categoriesItems.map((category)=>
                   <tr>
                     <td>{category.name}</td>
                     <td>{category.creationDate}</td>
@@ -100,7 +155,7 @@ export default function CategoryList() {
                        </div>
                     </td>
                   </tr>
-              )}
+              ):<tr><td colSpan={3} className='py-3'><NoData/></td></tr>}
             </tbody>
             </table>
       </>

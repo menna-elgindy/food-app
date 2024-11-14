@@ -3,6 +3,7 @@ import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
 import { axiosInstance, RECIPE_URL } from '../../../../services/urls/urls';
+import NoData from '../../../shared/components/NoData/NoData';
 
 export default function RecipesList() {
   const [recipesItems,setRecipesItems]= useState([]);
@@ -82,15 +83,15 @@ export default function RecipesList() {
                 <th scope="col"></th>
               </tr>
             </thead>
-            <tbody>
-              {recipesItems.map((recipe)=>
+         <tbody>
+              { recipesItems.length>0?recipesItems.map((recipe)=>
                   <tr>
                     <td>{recipe.name}</td>
-                    <td><img src={`https://upskilling-egypt.com:3006/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/></td>
+                    <td>{recipe.imagePath?<img src={`https://upskilling-egypt.com:3006/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/>:''}</td>
                     <td>{recipe.price}</td>
                     <td>{recipe.description}</td>
                     <td>{recipe.tag.name}</td>
-                    <td>{recipe.category}</td>
+                    <td>{recipe.category[0]?.name}</td>
                     <td>
                       {/*Actions Dropdown*/}
                       <div className="dropdown">
@@ -107,7 +108,7 @@ export default function RecipesList() {
                        </div>
                     </td>
                   </tr>
-              )}
+              ):<tr><td colSpan={7} className='py-3'><NoData/></td></tr>} 
             </tbody>
           </table>
       </>
