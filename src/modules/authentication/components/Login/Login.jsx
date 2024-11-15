@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify';
 import { axiosInstance, USERS_URLS } from '../../../../services/urls/urls';
+import { Email_VALIDATION } from '../../../../services/urls/validations';
 
 
 export default function Login({saveLoginData}) {
@@ -44,13 +45,7 @@ export default function Login({saveLoginData}) {
                     placeholder="Enter your E-mail" 
                     aria-label="email" 
                     aria-describedby="basic-addon1"
-                    {...register('email',{
-                      required:'email is required',
-                      pattern:{
-                        value:/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message:'Email is not valid'
-                      }
-                    })}
+                    {...register('email',Email_VALIDATION)}
                     />
                 </div>
                 {errors.email&&<span className='text-danger '>{errors.email.message}</span>}

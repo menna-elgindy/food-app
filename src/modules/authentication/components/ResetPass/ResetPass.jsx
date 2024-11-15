@@ -4,10 +4,11 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { USERS_URLS } from '../../../../services/urls/urls';
+import { Email_VALIDATION, PASSWORD_VALIDATION } from '../../../../services/urls/validations';
 
 
 export default function ResetPass() {
-  let {register,setValue,formState:{errors},handleSubmit} = useForm();
+  let {register,setValue,formState:{errors},handleSubmit,watch,trigger} = useForm({mode:'onChange'});
   let navigate = useNavigate();
   let [isLoading ,setIsLoading]=useState(false);
   let [storedEmail, setStoredEmail]=useState('')
@@ -34,6 +35,11 @@ export default function ResetPass() {
     }
   },[storedEmail,setValue])
 
+  useEffect(()=>{
+    if(watch('confirmPassword'))
+    trigger('confirmPassword')
+  },[watch('password'),watch('confirmPassword'),trigger])
+
   return (  
             <>
               <div className='title my-4'>
@@ -52,13 +58,7 @@ export default function ResetPass() {
                     defaultValue={storedEmail}
                     aria-label="email" 
                     aria-describedby="basic-addon1"
-                    {...register('email',{
-                      required:'email is required',
-                      pattern:{
-                        value:/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message:'Email is not valid'
-                      }
-                    })}
+                    {...register('email',Email_VALIDATION)}
                     />
                 </div>
                 {errors.email&&<span className='text-danger '>{errors.email.message}</span>}
@@ -78,6 +78,7 @@ export default function ResetPass() {
                     />
                 </div>
                 {errors.seed&&<span className='text-danger '>{errors.seed.message}</span>}
+                {/*password*/}
                 <div className="input-group mt-3 ">
                   <span className="input-group-text" id="basic-addon1">
                      <i className="fa fa-lock " aria-hidden="true"></i>
@@ -88,15 +89,14 @@ export default function ResetPass() {
                     placeholder="New Password" 
                     aria-label="password" 
                     aria-describedby="basic-addon1"
-                    {...register('password',{
-                      required:'New password is required'
-                    })}
+                    {...register('password',PASSWORD_VALIDATION)}
                     />
                     <span className="input-group-text" id="basic-addon1">
                       <i onClick={togglePasswordVisibility} className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}></i>
                     </span>
                 </div>
                 {errors.password&&<span className='text-danger '>{errors.password.message}</span>}
+                {/*Confirm password*/}
                 <div className="input-group mt-3">
                   <span className="input-group-text" id="basic-addon1">
                      <i className="fa fa-lock" aria-hidden="true"></i>
@@ -108,7 +108,10 @@ export default function ResetPass() {
                     aria-label="confirm password" 
                     aria-describedby="basic-addon1"
                     {...register('confirmPassword',{
-                      required:'Confirm password is required'
+                      required:'Confirm password is required',
+                      validate:(confirmPassword)=>{
+                        return confirmPassword == watch('password')?'':'Passwords do not match'
+                      }
                     })}
                     />
                     <span className="input-group-text" id="basic-addon1">

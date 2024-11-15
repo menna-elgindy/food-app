@@ -13,7 +13,8 @@ import { toast } from 'react-toastify';
 
 export default function CategoryList() {
   let {register,formState:{errors},handleSubmit} = useForm();
-  let [isLoading ,setIsLoading]=useState(false);
+  let [isLoadingAdd ,setIsLoadingAdd]=useState(false);
+  let [isLoadingEdit ,setIsLoadingEdit]=useState(false);
 
   const [categoriesItems,setCategoriesItems]= useState([]);
   const [selectedId, setSelectedId] =useState(null);
@@ -27,8 +28,15 @@ export default function CategoryList() {
 
   const [showAdd, setShowAdd] = useState(false);
   const handleCloseAdd = () => setShowAdd(false);
-  const handleShowAdd = (id) => {
+  const handleShowAdd = () => {
     setShowAdd(true);
+  }
+
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = (id) => {
+    setSelectedId(id)
+    setShowEdit(true);
   }
 
   
@@ -54,10 +62,11 @@ export default function CategoryList() {
       setCategoriesItems(response.data.data)
     }catch(error){
       console.log(error)
-    } 
+    }
   }
-  let onSubmit = async(data)=>{
+  let onSubmitAdd = async(data)=>{
     try{
+      setIsLoadingAdd(true)
       let response= await axiosInstance.post(CATEGORY_URLS.ADD_CATEGORY,data)
       console.log(response.data.data)
       toast.success('Category added successfully')
@@ -65,7 +74,24 @@ export default function CategoryList() {
       handleCloseAdd()
     }catch(error){
       console.log(error)
+    }finally{
+      setIsLoadingAdd(false)
     } 
+  }
+
+  let onSubmitEdit = async(data)=>{
+    try{
+      setIsLoadingEdit(true)
+      let response= await axiosInstance.put(CATEGORY_URLS.UPDATE_CATEGORY(selectedId),data)
+      console.log(response.data.data)
+      toast.success('Category updated successfully')
+      getCategories()
+      handleCloseEdit()
+    }catch(error){
+      console.log(error)
+    }finally{
+      setIsLoadingEdit(false)
+    }  
   }
 
   useEffect(()=>{
@@ -86,12 +112,13 @@ export default function CategoryList() {
             handleClose={handleClose}
             show={show}
           /> 
+          {/*Add Modal*/ }
           <Modal show={showAdd} onHide={handleCloseAdd} >
               <Modal.Header closeButton>
                 <ModalTitle>Add category</ModalTitle>
               </Modal.Header>
               <Modal.Body style={{borderTop:'none'}}>
-              <form onSubmit={handleSubmit(onSubmit)} style={{height:'250px'}}>
+              <form onSubmit={handleSubmit(onSubmitAdd)} style={{height:'250px'}}>
                 <div className="input-group mt-3 " >
                   <input 
                     type="text" 
@@ -109,14 +136,44 @@ export default function CategoryList() {
                 <button 
                    className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
                    style={{position:'absolute' ,bottom:'24px',right:'24px'}}
-                    disabled={isLoading}
+                    disabled={isLoadingAdd}
                 >
-                  {isLoading?'...Loading':'Save'}
+                  {isLoadingAdd?'...Loading':'Save'}
                 </button>
               </form>
               </Modal.Body>
             </Modal>
-
+          {/*Edit Modal */}
+          <Modal show={showEdit} onHide={handleCloseEdit} >
+              <Modal.Header closeButton>
+                <ModalTitle>Edit category</ModalTitle>
+              </Modal.Header>
+              <Modal.Body style={{borderTop:'none'}}>
+              <form onSubmit={handleSubmit(onSubmitEdit)} style={{height:'250px'}}>
+                <div className="input-group mt-3 " >
+                  <input 
+                    type="text" 
+                    className="form-control  my-2" 
+                    style={{backgroundColor: '#F7F7F7',border:'none'}}
+                    placeholder="Category Name" 
+                    aria-label="name" 
+                    aria-describedby="basic-addon1"
+                    {...register('name',{
+                      required:'Name is required'
+                    })}
+                    />
+                </div>
+                {errors.name&&<span className='text-danger'>{errors.name.message}</span>}
+                <button 
+                   className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
+                   style={{position:'absolute' ,bottom:'24px',right:'24px'}}
+                    disabled={isLoadingAdd}
+                >
+                  {isLoadingAdd?'...Loading':'Save'}
+                </button>
+              </form>
+              </Modal.Body>
+            </Modal>
           <div className='d-flex justify-content-between align-items-center mt-2'>
             <div>
               <h5 className='mb-0'>
@@ -136,7 +193,7 @@ export default function CategoryList() {
             </thead>
           <tbody>
           {categoriesItems.length>0?categoriesItems.map((category)=>
-                  <tr>
+                  <tr key={category.id}>
                     <td>{category.name}</td>
                     <td>{category.creationDate}</td>
                     <td>
@@ -148,7 +205,7 @@ export default function CategoryList() {
                 
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
-                              <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
+                              <li onClick={()=>handleShowEdit(category.id)} className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
                               <li onClick={()=>handleShow(category.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
                             </ul>
                             

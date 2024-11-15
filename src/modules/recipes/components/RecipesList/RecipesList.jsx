@@ -85,7 +85,7 @@ export default function RecipesList() {
             </thead>
          <tbody>
               { recipesItems.length>0?recipesItems.map((recipe)=>
-                  <tr>
+                  <tr key={recipe.id}>
                     <td>{recipe.name}</td>
                     <td>{recipe.imagePath?<img src={`https://upskilling-egypt.com:3006/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/>:''}</td>
                     <td>{recipe.price}</td>

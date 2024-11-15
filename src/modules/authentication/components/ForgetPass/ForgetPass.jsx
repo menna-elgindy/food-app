@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { USERS_URLS } from '../../../../services/urls/urls';
+import { axiosInstance, USERS_URLS } from '../../../../services/urls/urls';
+import { Email_VALIDATION } from '../../../../services/urls/validations';
 
 export default function ForgetPass() {
   let {register,formState:{errors},handleSubmit} = useForm();
@@ -13,7 +14,7 @@ export default function ForgetPass() {
   const onSubmit =async(data)=>{
       try{
           setIsLoading(true)
-          let response = await axios.post(USERS_URLS.FORGET_PASSWORD,data)
+          let response = await axiosInstance.post(USERS_URLS.FORGET_PASSWORD,data)
           sessionStorage.setItem('email',data.email)
           toast.success('Please enter your new password')
           navigate('/reset-password')
@@ -39,13 +40,7 @@ export default function ForgetPass() {
                     placeholder="Enter your E-mail" 
                     aria-label="email" 
                     aria-describedby="basic-addon1"
-                    {...register('email',{
-                      required:'email is required',
-                      pattern:{
-                        value:/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message:'Email is not valid'
-                      }
-                    })}
+                    {...register('email',Email_VALIDATION)}
                     />
                 </div>
                 {errors.email&&<span className='text-danger '>{errors.email.message}</span>}
