@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import logo from '../../../../assets/imgs/app-logo.png'
 
-export default function SideBar() {
+export default function SideBar({setLoginData}) {
   const [isCollapse,setIsCollapse]=useState(false);
 
   let toggleCollapse = ()=>{
@@ -25,17 +25,17 @@ export default function SideBar() {
               > Home
             </MenuItem>
             <MenuItem
-               component={<Link to='/dashboard/users'/>} 
+               component={<Link to='/users'/>} 
                icon={<i className="fa-solid fa-users"></i>}
                > Users
             </MenuItem>
             <MenuItem 
-              component={<Link to='/dashboard/recipes'/>}
+              component={<Link to='/recipes'/>}
               icon={<i className="fa-solid fa-table-cells-large"></i>}
               > Recipes
             </MenuItem>
             <MenuItem 
-              component={<Link to='/dashboard/categories'/>} 
+              component={<Link to='/categories'/>} 
               icon={<i className="fa-regular fa-calendar-days"></i>}
               > Categories
             </MenuItem>
@@ -44,7 +44,11 @@ export default function SideBar() {
               > Change Password
             </MenuItem>
             <MenuItem 
-              component={<Link to='/login'/>} 
+              component={<Link onClick={()=>{
+                localStorage.clear()
+                setLoginData(null)
+
+              }} to='/login'/>} 
               icon={<i className="fa-solid fa-right-from-bracket"></i>}
               > Logout
             </MenuItem>

@@ -9,14 +9,15 @@ import Button from 'react-bootstrap/Button';
 import { ModalTitle } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import useCategories from '../../hooks/useCategories';
 
 
 export default function CategoryList() {
-  let {register,formState:{errors},handleSubmit} = useForm();
-  let [isLoadingAdd ,setIsLoadingAdd]=useState(false);
-  let [isLoadingEdit ,setIsLoadingEdit]=useState(false);
+  let {register,formState:{errors,isSubmitting},handleSubmit} = useForm();
 
-  const [categoriesItems,setCategoriesItems]= useState([]);
+
+ // const [categoriesItems,setCategoriesItems]= useState([]);
+  const categoriesQuery = useCategories()
   const [selectedId, setSelectedId] =useState(null);
 
   const [show, setShow] = useState(false);
@@ -43,14 +44,16 @@ export default function CategoryList() {
   const deleteCategory =async()=>{
     try{
       let response =await axiosInstance.delete(CATEGORY_URLS.DELETE_CATEGORY(selectedId))
-      getCategories()
+      toast.success('Category deleted successfully')
+     // getCategories()
+     categoriesQuery.triggerCategories()
     }catch(error){
-      console.log(error)
+      toast.error(error.response.data.message)
     }
     handleClose();
   }
 
-  let getCategories = async()=>{
+ /* let getCategories = async()=>{
     try{
       let response= await axiosInstance.get(CATEGORY_URLS.GET_CATEGORY,{
         params:{
@@ -63,39 +66,35 @@ export default function CategoryList() {
     }catch(error){
       console.log(error)
     }
-  }
+  }*/
   let onSubmitAdd = async(data)=>{
     try{
-      setIsLoadingAdd(true)
       let response= await axiosInstance.post(CATEGORY_URLS.ADD_CATEGORY,data)
       console.log(response.data.data)
       toast.success('Category added successfully')
-      getCategories()
+     // getCategories()
+     categoriesQuery.triggerCategories()
       handleCloseAdd()
     }catch(error){
-      console.log(error)
-    }finally{
-      setIsLoadingAdd(false)
-    } 
+      toast.error(error.response.data.message)
+    }
   }
 
   let onSubmitEdit = async(data)=>{
     try{
-      setIsLoadingEdit(true)
       let response= await axiosInstance.put(CATEGORY_URLS.UPDATE_CATEGORY(selectedId),data)
       console.log(response.data.data)
       toast.success('Category updated successfully')
-      getCategories()
+     // getCategories()
+     categoriesQuery.triggerCategories()
       handleCloseEdit()
     }catch(error){
-      console.log(error)
-    }finally{
-      setIsLoadingEdit(false)
-    }  
+      toast.error(error.response.data.message)
+    }
   }
 
   useEffect(()=>{
-    getCategories();
+   // getCategories();
   },[])
 
     return (
@@ -136,9 +135,9 @@ export default function CategoryList() {
                 <button 
                    className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
                    style={{position:'absolute' ,bottom:'24px',right:'24px'}}
-                    disabled={isLoadingAdd}
+                    disabled={isSubmitting}
                 >
-                  {isLoadingAdd?'...Loading':'Save'}
+                  {isSubmitting?'...Loading':'Save'}
                 </button>
               </form>
               </Modal.Body>
@@ -167,9 +166,9 @@ export default function CategoryList() {
                 <button 
                    className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
                    style={{position:'absolute' ,bottom:'24px',right:'24px'}}
-                    disabled={isLoadingAdd}
+                    disabled={isSubmitting}
                 >
-                  {isLoadingAdd?'...Loading':'Save'}
+                  {isSubmitting?'...Loading':'Save'}
                 </button>
               </form>
               </Modal.Body>
@@ -192,7 +191,7 @@ export default function CategoryList() {
               </tr>
             </thead>
           <tbody>
-          {categoriesItems.length>0?categoriesItems.map((category)=>
+          {categoriesQuery?.categories?.data?.length>0?categoriesQuery?.categories?.data.map((category)=>
                   <tr key={category.id}>
                     <td>{category.name}</td>
                     <td>{category.creationDate}</td>

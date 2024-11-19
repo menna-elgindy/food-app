@@ -4,6 +4,7 @@ import image from '../../../../assets/imgs/recipes-img.png'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
 import { axiosInstance, RECIPE_URL } from '../../../../services/urls/urls';
 import NoData from '../../../shared/components/NoData/NoData';
+import { Link } from 'react-router-dom';
 
 export default function RecipesList() {
   const [recipesItems,setRecipesItems]= useState([]);
@@ -29,7 +30,7 @@ export default function RecipesList() {
 
   let getRecipes = async()=>{
     try{
-      let response= await axiosInstance.get(RECIPE_URL.GET_RECIPE,{
+      let response= await axiosInstance.get(RECIPE_URL.GET_RECIPES,{
         params:{
           pageSize:10,
           pageNumber:1
@@ -68,7 +69,7 @@ export default function RecipesList() {
               </h5>
               <p>You can check all details</p>
             </div>
-            <button className='btn btn-success'>Add New Recipe</button>
+            <Link to='/recipes/new-recipe' className='btn btn-success'>Add New Recipe</Link>
           </div>
           
           <table className="table table-striped me-2 ">
@@ -101,7 +102,7 @@ export default function RecipesList() {
                 
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
-                              <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
+                              <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i><Link to ={`/recipes/${recipe?.id}`} style={{textDecoration:'none',color:'#212529'}}> Edit</Link></li>
                               <li onClick={()=>handleShow(recipe.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
                             </ul>
                             

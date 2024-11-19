@@ -7,13 +7,11 @@ import { axiosInstance, USERS_URLS } from '../../../../services/urls/urls';
 import { Email_VALIDATION } from '../../../../services/urls/validations';
 
 export default function ForgetPass() {
-  let {register,formState:{errors},handleSubmit} = useForm();
+  let {register,formState:{errors,isSubmitting},handleSubmit} = useForm();
   let navigate = useNavigate();
-  let [isLoading ,setIsLoading]=useState(false);
 
   const onSubmit =async(data)=>{
       try{
-          setIsLoading(true)
           let response = await axiosInstance.post(USERS_URLS.FORGET_PASSWORD,data)
           sessionStorage.setItem('email',data.email)
           toast.success('Please enter your new password')
@@ -32,7 +30,7 @@ export default function ForgetPass() {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="input-group mt-3 ">
                   <span className="input-group-text" id="basic-addon1">
-                     <i className="fa fa-envelope" aria-hidden="true"></i>
+                     <i className="fa-solid fa-mobile-screen icon-line" aria-hidden="true"></i>
                   </span>
                   <input 
                     type="text" 
@@ -46,9 +44,9 @@ export default function ForgetPass() {
                 {errors.email&&<span className='text-danger '>{errors.email.message}</span>}
                 <button 
                    className='btn btn-success w-100 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                 >
-                  {isLoading?'...Loading':'Submit'}
+                  {isSubmitting?'...Loading':'Submit'}
                 </button>
               </form>
             </>

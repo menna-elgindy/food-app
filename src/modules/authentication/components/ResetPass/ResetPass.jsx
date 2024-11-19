@@ -3,14 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { USERS_URLS } from '../../../../services/urls/urls';
+import { axiosInstance, USERS_URLS } from '../../../../services/urls/urls';
 import { Email_VALIDATION, PASSWORD_VALIDATION } from '../../../../services/urls/validations';
 
 
 export default function ResetPass() {
-  let {register,setValue,formState:{errors},handleSubmit,watch,trigger} = useForm({mode:'onChange'});
+  let {register,setValue,formState:{errors,isSubmitting},handleSubmit,watch,trigger} = useForm({mode:'onChange'});
   let navigate = useNavigate();
-  let [isLoading ,setIsLoading]=useState(false);
   let [storedEmail, setStoredEmail]=useState('')
   let [showPassword,setShowPassword]=useState(false);
 
@@ -20,8 +19,7 @@ export default function ResetPass() {
 
   const onSubmit =async(data)=>{
       try{
-         setIsLoading(true)
-          let response = await axios.post(USERS_URLS.RESET_PASSWORD,data)
+          let response = await axiosInstance.post(USERS_URLS.RESET_PASSWORD,data)
           toast.success('Password changed successfully')
           navigate('/login')
       }catch(error){
@@ -35,7 +33,7 @@ export default function ResetPass() {
     }
   },[storedEmail,setValue])
 
-  useEffect(()=>{
+ useEffect(()=>{
     if(watch('confirmPassword'))
     trigger('confirmPassword')
   },[watch('password'),watch('confirmPassword'),trigger])
@@ -49,7 +47,7 @@ export default function ResetPass() {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="input-group mt-3">
                   <span className="input-group-text" id="basic-addon1">
-                     <i className="fa fa-envelope" aria-hidden="true"></i>
+                     <i className="fa fa-envelope icon-line" aria-hidden="true"></i>
                   </span>
                   <input 
                     type="text" 
@@ -64,7 +62,7 @@ export default function ResetPass() {
                 {errors.email&&<span className='text-danger '>{errors.email.message}</span>}
                 <div className="input-group mt-3">
                   <span className="input-group-text" id="basic-addon1">
-                     <i className="fa fa-lock" aria-hidden="true"></i>
+                     <i className="fa fa-lock icon-line" aria-hidden="true"></i>
                   </span>
                   <input 
                     type="text" 
@@ -81,7 +79,7 @@ export default function ResetPass() {
                 {/*password*/}
                 <div className="input-group mt-3 ">
                   <span className="input-group-text" id="basic-addon1">
-                     <i className="fa fa-lock " aria-hidden="true"></i>
+                     <i className="fa fa-lock icon-line" aria-hidden="true"></i>
                   </span>
                   <input 
                     type={showPassword?"text":"password" }
@@ -91,39 +89,63 @@ export default function ResetPass() {
                     aria-describedby="basic-addon1"
                     {...register('password',PASSWORD_VALIDATION)}
                     />
-                    <span className="input-group-text" id="basic-addon1">
-                      <i onClick={togglePasswordVisibility} className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}></i>
-                    </span>
+                    <button
+                      type ='button'
+                      onClick={togglePasswordVisibility} 
+                      onMouseDown={(e)=>{e.preventDefault()}}
+                      onMouseUp={(e)=>{e.preventDefault()}}
+                      className="input-group-text" id="basic-addon1"
+                      >
+                      <span className='sr-only'>{showPassword?'hide password':'show password'}</span>
+                        <i 
+                          className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}
+                          aria-hidden='true'
+                        >
+                        </i>
+                    </button>
                 </div>
                 {errors.password&&<span className='text-danger '>{errors.password.message}</span>}
                 {/*Confirm password*/}
                 <div className="input-group mt-3">
                   <span className="input-group-text" id="basic-addon1">
-                     <i className="fa fa-lock" aria-hidden="true"></i>
+                     <i className="fa fa-lock icon-line" aria-hidden="true"></i>
                   </span>
                   <input 
                     type={showPassword?"text":"password" }
                     className="form-control" 
+                    autoFocus={false}
                     placeholder="Confirm New Password" 
                     aria-label="confirm password" 
                     aria-describedby="basic-addon1"
                     {...register('confirmPassword',{
                       required:'Confirm password is required',
                       validate:(confirmPassword)=>{
-                        return confirmPassword == watch('password')?'':'Passwords do not match'
+                        return confirmPassword == watch('password')?true:'Passwords do not match'
                       }
                     })}
                     />
-                    <span className="input-group-text" id="basic-addon1">
-                      <i onClick={togglePasswordVisibility} className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}></i>
-                    </span>
+                    <button
+                      type ='button'
+                      onClick={togglePasswordVisibility} 
+                      onMouseDown={(e)=>{e.preventDefault()}}
+                      onMouseUp={(e)=>{e.preventDefault()}}
+                      className="input-group-text" id="basic-addon1"
+                      >
+                       <span className='sr-only'>{showPassword?'hide password':'show password'}</span>
+                        <i 
+                          className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}
+                          aria-hidden='true'
+                        >
+                        </i>
+                      </button>
                 </div>
                 {errors.confirmPassword&&<span className='text-danger '>{errors.confirmPassword.message}</span>}
                 <button
                   className='btn btn-success w-100 text-white rounded rounded-2 border-0 my-3 py-2'
-                  disabled={isLoading}
+                  disabled={isSubmitting}
+                  type='submit'
                 >
-                    {isLoading?'...Loading':'Reset Password'}
+                    {isSubmitting?'...Loading':'Reset Password'}
                 </button>
               </form>
             </>

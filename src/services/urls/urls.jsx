@@ -16,15 +16,24 @@ export const CATEGORY_URLS ={
 
 //Recipes
 export const RECIPE_URL ={
-    GET_RECIPE:`/Recipe/`,
+    GET_RECIPES:`/Recipe/`,
+    GET_RECIPE:(id)=>`/Recipe/${id}`,
     ADD_RECIPE:`/Recipe/`,
     DELETE_RECIPE:(id)=>`/Recipe/${id}`,
+    UPDATE_RECIPE:(id)=>`/Recipe/${id}`,
 }
 
 //Users
 export const USERS_URLS ={
     LOGIN:`/Users/Login`,
+    REGISTER:`Users/Register`,
     FORGET_PASSWORD:`/Users/Reset/Request`,
     RESET_PASSWORD:`/Users/Reset`,
+    VERIFY_USER:`/Users/verify`
+}
 
+//TAGS
+
+export const TAGS_URLS ={
+    GET_TAGS:`/tag/`
 }

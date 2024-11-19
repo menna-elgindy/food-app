@@ -19,6 +19,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import ProtectedRoute from './modules/shared/components/ProtectedRoute/ProtectedRoute'
+import RecipeForm from './modules/recipes/components/RecipeForm/RecipeForm'
+import VerifyUser from './modules/authentication/components/VerfiyUser/VerifyUser'
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
     let decodedToken = localStorage.getItem('token');
     let encodedToken = jwtDecode(decodedToken);
     setLoginData(encodedToken)
+    console.log(loginData)
+
   }
 
   useEffect(()=>{
@@ -45,6 +49,7 @@ function App() {
         {index:true,element:<Login saveLoginData={saveLoginData}/>},
         {path:'login',element:<Login saveLoginData={saveLoginData}/>},
         {path:'register',element:<Registeration/>},
+        {path:'verify',element:<VerifyUser/>},
         {path:'forget-password',element:<ForgetPass/>},
         {path:'reset-password',element:<ResetPass/>},
         {path:'change-password',element:<ChangePass/>}
@@ -52,16 +57,18 @@ function App() {
       ]
     },
     {
-      path:'/dashboard',
+      path:'',
       element:(
         <ProtectedRoute loginData={loginData}>
-          <MasterLayout loginData={loginData}/>
+          <MasterLayout loginData={loginData} setLoginData={setLoginData}/>
         </ProtectedRoute>
       ),
       errorElement:<NotFound/>,
       children:[
-        {index:true,element:<Dashboard loginData={loginData}/>},
+        {path:'dashboard',element:<Dashboard loginData={loginData}/>},
         {path:'recipes',element:<RecipesList/>},
+        {path:'recipes/new-recipe',element:<RecipeForm/>},
+        {path:'recipes/:recipeId',element:<RecipeForm/>},
         {path:'recipe-data',element:<RecipesData/>},
         {path:'categories',element:<CategoryList/>},
         {path:'category-data',element:<CategoryData/>},
