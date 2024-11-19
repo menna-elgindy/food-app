@@ -9,8 +9,6 @@ import useCategories from '../../../categories/hooks/useCategories';
 import useTags from '../../../../hooks/useTags';
 export default function RecipeForm() {
     const {register,formState:{errors ,isSubmitting},setValue,handleSubmit} = useForm({mode:'onChange'});
-   // const [tags,setTags]=useState([])
-    //const [categoriesItems,setCategoriesItems]= useState([]);
     const categoriesQuery = useCategories()
     const TagsQuery = useTags();
     const navigate =useNavigate()
@@ -20,32 +18,7 @@ export default function RecipeForm() {
     useBeforUnload();
 
     useEffect(()=>{
-      /* const getTags= async()=>{
-            try{
-                let response = await axiosInstance.get(TAGS_URLS.GET_TAGS)
-                setTags(response.data)
-            }catch(error){
-                console.log(error)
-            }
-        }*/
-        /*const getCategories = async()=>{
-            try{
-              let response= await axiosInstance.get(CATEGORY_URLS.GET_CATEGORY,{
-                params:{
-                  pageSize:10,
-                  pageNumber:1
-                }
-              })
-              setCategoriesItems(response.data.data)
-            }catch(error){
-              console.log(error)
-            }
-          }*/
-        (async()=>{ 
-           //await getTags()
-          // await getCategories()
-        })()
-
+     
         if(!isNewRecipe){
             const getRecipe = async()=>{
                 const response = await axiosInstance.get(RECIPE_URL.GET_RECIPE(params.recipeId))
@@ -114,7 +87,7 @@ export default function RecipeForm() {
                         required:'Tag is required'
                     })}>
                         <option value=''>Tag</option>
-                        {TagsQuery?.tags.map(({id,name})=>
+                        {TagsQuery?.tags?.map(({id,name})=>
                             <option key={id} value={id}>{name}</option>
                         )}
                     </select>
@@ -141,7 +114,7 @@ export default function RecipeForm() {
                         required:'Category is required'
                     })}>
                         <option value=''>Categ</option>
-                        {categoriesQuery?.categories?.data.map(({id,name})=>
+                        {categoriesQuery?.categories?.data?.map(({id,name})=>
                             <option key={id} value={id}>{name}</option>
                         )}
                     </select>

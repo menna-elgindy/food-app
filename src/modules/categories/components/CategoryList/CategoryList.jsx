@@ -15,8 +15,6 @@ import useCategories from '../../hooks/useCategories';
 export default function CategoryList() {
   let {register,formState:{errors,isSubmitting},handleSubmit} = useForm();
 
-
- // const [categoriesItems,setCategoriesItems]= useState([]);
   const categoriesQuery = useCategories()
   const [selectedId, setSelectedId] =useState(null);
 
@@ -45,7 +43,6 @@ export default function CategoryList() {
     try{
       let response =await axiosInstance.delete(CATEGORY_URLS.DELETE_CATEGORY(selectedId))
       toast.success('Category deleted successfully')
-     // getCategories()
      categoriesQuery.triggerCategories()
     }catch(error){
       toast.error(error.response.data.message)
@@ -53,26 +50,11 @@ export default function CategoryList() {
     handleClose();
   }
 
- /* let getCategories = async()=>{
-    try{
-      let response= await axiosInstance.get(CATEGORY_URLS.GET_CATEGORY,{
-        params:{
-          pageSize:10,
-          pageNumber:1
-        }
-      })
-      console.log(response.data.data)
-      setCategoriesItems(response.data.data)
-    }catch(error){
-      console.log(error)
-    }
-  }*/
   let onSubmitAdd = async(data)=>{
     try{
       let response= await axiosInstance.post(CATEGORY_URLS.ADD_CATEGORY,data)
       console.log(response.data.data)
       toast.success('Category added successfully')
-     // getCategories()
      categoriesQuery.triggerCategories()
       handleCloseAdd()
     }catch(error){
@@ -85,17 +67,12 @@ export default function CategoryList() {
       let response= await axiosInstance.put(CATEGORY_URLS.UPDATE_CATEGORY(selectedId),data)
       console.log(response.data.data)
       toast.success('Category updated successfully')
-     // getCategories()
      categoriesQuery.triggerCategories()
       handleCloseEdit()
     }catch(error){
       toast.error(error.response.data.message)
     }
   }
-
-  useEffect(()=>{
-   // getCategories();
-  },[])
 
     return (
       <>
