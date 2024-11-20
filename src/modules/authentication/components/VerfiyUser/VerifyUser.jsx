@@ -6,10 +6,10 @@ import { Email_VALIDATION } from '../../../../services/urls/validations';
 import { toast } from 'react-toastify';
 
 export default function VerifyUser() {
-    let {register,setValue,formState:{errors,isSubmitting},handleSubmit,watch,trigger} = useForm({mode:'onChange'});
+    let {register,setValue,formState:{errors,isSubmitting},handleSubmit} = useForm({mode:'onChange'});
     let navigate = useNavigate();
     let [storedEmail, setStoredEmail]=useState('')
-    let [showPassword,setShowPassword]=useState(false);
+
 
     useEffect(()=>{// populate the email from prevoius step
         setStoredEmail(sessionStorage.getItem('email'))
@@ -22,6 +22,7 @@ export default function VerifyUser() {
         try{
             let response = await axiosInstance.put(USERS_URLS.VERIFY_USER,data)
             toast.success('Verified successfully')
+            sessionStorage.clear()
             navigate('/login')
         }catch(error){
           toast.error(error.response.data.message)

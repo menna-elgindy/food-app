@@ -1,6 +1,7 @@
 import axios from "axios"
 
 export const baseURL ='https://upskilling-egypt.com:3006/api/v1'
+export const baseImageURL ='https://upskilling-egypt.com:3006'
 export const axiosInstance =axios.create({
     baseURL,
     headers:{Authorization:localStorage.getItem('token')}
@@ -29,7 +30,10 @@ export const USERS_URLS ={
     REGISTER:`Users/Register`,
     FORGET_PASSWORD:`/Users/Reset/Request`,
     RESET_PASSWORD:`/Users/Reset`,
-    VERIFY_USER:`/Users/verify`
+    VERIFY_USER:`/Users/verify`,
+    GET_CURRENTUSER:`/Users/currentUser`,
+    GET_USER:(id)=>`/Users/${id}`
+
 }
 
 //TAGS

@@ -21,22 +21,45 @@ import { jwtDecode } from 'jwt-decode'
 import ProtectedRoute from './modules/shared/components/ProtectedRoute/ProtectedRoute'
 import RecipeForm from './modules/recipes/components/RecipeForm/RecipeForm'
 import VerifyUser from './modules/authentication/components/VerfiyUser/VerifyUser'
+import { axiosInstance, USERS_URLS } from './services/urls/urls'
 
 
 function App() {
 
   const[loginData,setLoginData]=useState(null);
+
   let saveLoginData = ()=>{
     let decodedToken = localStorage.getItem('token');
     let encodedToken = jwtDecode(decodedToken);
     setLoginData(encodedToken)
+    getCurrentUser()
     console.log(loginData)
 
   }
 
+  const[currentUser,setCurrentUser]= useState(null);
+
+  const getCurrentUser =async()=>{
+   
+    try{
+      const response = await axiosInstance.get(USERS_URLS.GET_CURRENTUSER)
+      setCurrentUser(response.data) 
+      console.log(response.data)
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+ /* useEffect(()=>{
+    getCurrentUser();
+  },[])*/
+
   useEffect(()=>{
-    if(localStorage.getItem('token')) //if logged in
-    saveLoginData()
+    if(localStorage.getItem('token')){//if logged in
+     // debugger;
+      saveLoginData()
+    } 
+
     console.log(loginData)
   },[])
 
@@ -46,9 +69,9 @@ function App() {
       element:<AuthLayout/>,
       errorElement:<NotFound/>,
       children:[
-        {index:true,element:<Login saveLoginData={saveLoginData}/>},
+        {index:true,element:<Login saveLoginData={saveLoginData} />},
         {path:'login',element:<Login saveLoginData={saveLoginData}/>},
-        {path:'register',element:<Registeration/>},
+        {path:'register',element:<Registeration />},
         {path:'verify',element:<VerifyUser/>},
         {path:'forget-password',element:<ForgetPass/>},
         {path:'reset-password',element:<ResetPass/>},
@@ -60,7 +83,7 @@ function App() {
       path:'',
       element:(
         <ProtectedRoute loginData={loginData}>
-          <MasterLayout loginData={loginData} setLoginData={setLoginData}/>
+          <MasterLayout loginData={loginData} setLoginData={setLoginData} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
         </ProtectedRoute>
       ),
       errorElement:<NotFound/>,

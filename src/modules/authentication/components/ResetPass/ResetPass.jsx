@@ -21,6 +21,7 @@ export default function ResetPass() {
       try{
           let response = await axiosInstance.post(USERS_URLS.RESET_PASSWORD,data)
           toast.success('Password changed successfully')
+          sessionStorage.clear()
           navigate('/login')
       }catch(error){
         toast.error(error.response.data.message)

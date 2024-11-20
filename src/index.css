@@ -26,9 +26,9 @@ body{
     padding-right:6px
 
 }
-input[type='file']{
+/*input[type='file']{
     width:70%;
-}
+}*/
 .sidebar-color{
     background-color: #1F263E;
     border-radius:0 60px 0 0 ; 
@@ -140,3 +140,9 @@ input[type='file']{
     border-width: 0;
 }
 
+.input-img {
+    opacity: 1 !important;
+    display: block !important;
+    position: relative !important;
+  }
+  

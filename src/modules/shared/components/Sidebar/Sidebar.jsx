@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import logo from '../../../../assets/imgs/app-logo.png'
 
-export default function SideBar({setLoginData}) {
+export default function SideBar({setLoginData,setCurrentUser}) {
   const [isCollapse,setIsCollapse]=useState(false);
 
   let toggleCollapse = ()=>{
@@ -47,6 +47,7 @@ export default function SideBar({setLoginData}) {
               component={<Link onClick={()=>{
                 localStorage.clear()
                 setLoginData(null)
+                setCurrentUser(null)
 
               }} to='/login'/>} 
               icon={<i className="fa-solid fa-right-from-bracket"></i>}
