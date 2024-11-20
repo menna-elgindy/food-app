@@ -50,13 +50,9 @@ function App() {
     }
   }
 
- /* useEffect(()=>{
-    getCurrentUser();
-  },[])*/
 
   useEffect(()=>{
     if(localStorage.getItem('token')){//if logged in
-     // debugger;
       saveLoginData()
     } 
 

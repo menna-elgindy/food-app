@@ -2,10 +2,16 @@ import axios from "axios"
 
 export const baseURL ='https://upskilling-egypt.com:3006/api/v1'
 export const baseImageURL ='https://upskilling-egypt.com:3006'
-export const axiosInstance =axios.create({
+export const axiosInstance = axios.create({
     baseURL,
-    headers:{Authorization:localStorage.getItem('token')}
-})
+  //   headers: { Authorization: localStorage.getItem("token") },
+  });
+  
+  axiosInstance.interceptors.request.use((config) => {
+    config.headers.Authorization = localStorage.getItem("token");
+  
+    return config;
+  });
 
 //Categories
 export const CATEGORY_URLS ={

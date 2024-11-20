@@ -22,7 +22,7 @@ export default function AuthLayout() {
         <div className='row vh-100 justify-content-center align-items-center px-2'>
           <div className={location.pathname=='/register'?'col-md-8 bg-white rounded rounded-2 px-5 py-3':'col-md-6 bg-white rounded rounded-2 px-5 py-3'}>
                 <div className='logo-container text-center '>
-                    <img src={logo} className='w-75'/>
+                    <img src={logo} className='w-50'/>
                 </div>
                 <Outlet/>
                 </div>
