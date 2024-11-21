@@ -10,13 +10,19 @@ import { ModalTitle } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import useCategories from '../../hooks/useCategories';
+import Pagination from '../../../shared/components/Pagination/Pagination';
+
 
 
 export default function CategoryList() {
   let {register,formState:{errors,isSubmitting},handleSubmit} = useForm();
 
-  const categoriesQuery = useCategories()
+
+  const categoriesQuery = useCategories(1)
   const [selectedId, setSelectedId] =useState(null);
+
+
+
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -159,6 +165,18 @@ export default function CategoryList() {
             </div>
             <button className='btn btn-success'onClick={handleShowAdd}>Add New Category</button>
           </div>
+
+          {/*Filteration */}
+          <div className='row'>
+            <div className='col-md-6 mb-4'>
+              <input 
+                type="text" 
+                placeholder='Search here...'  
+                className='w-100 filter-input'
+                onChange={categoriesQuery.getNameValue}
+                />
+            </div>
+          </div>
             <table className="table table-striped me-2">
             <thead className=" border-light table-head">
               <tr>
@@ -169,9 +187,9 @@ export default function CategoryList() {
             </thead>
           <tbody>
           {categoriesQuery?.categories?.data?.length>0?categoriesQuery?.categories?.data.map((category)=>
-                  <tr key={category.id}>
-                    <td>{category.name}</td>
-                    <td>{category.creationDate}</td>
+                  <tr key={category?.id}>
+                    <td>{category?.name}</td>
+                    <td>{category?.creationDate}</td>
                     <td>
                       {/*Actions Dropdown*/}
                       <div className="dropdown">
@@ -191,6 +209,8 @@ export default function CategoryList() {
               ):<tr><td colSpan={3} className='py-3'><NoData/></td></tr>}
             </tbody>
             </table>
+            {/*pagination*/}
+            <Pagination arrayOfPages={categoriesQuery.arrayOfPages} updateParams={categoriesQuery.updateParams}/>
       </>
   )
 }

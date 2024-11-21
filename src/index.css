@@ -146,3 +146,11 @@ body{
     position: relative !important;
   }
   
+.pagination{
+    --bs-pagination-color:#1F263E;
+}
+.filter-input{
+    border: 1px solid #E0E2E7;
+    border-radius: 8px;
+    padding: 1rem;
+}

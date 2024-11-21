@@ -1,15 +1,46 @@
 import React,{useState,useEffect} from 'react'
 import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
+import noImage from '../../../../assets/imgs/no-img.jpg'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
 import { axiosInstance, baseImageURL, RECIPE_URL } from '../../../../services/urls/urls';
 import NoData from '../../../shared/components/NoData/NoData';
 import { Link } from 'react-router-dom';
+import Pagination from '../../../shared/components/Pagination/Pagination';
+import useCategories from '../../../categories/hooks/useCategories';
+import useTags from '../../../../hooks/useTags';
 
 export default function RecipesList() {
+  const categoriesQuery = useCategories(100)
+  const TagsQuery = useTags();
   const [recipesItems,setRecipesItems]= useState([]);
   const [selectedId, setSelectedId] =useState(null)
   const [show, setShow] = useState(false);
+  const[arrayOfPages,setArrayOfPages]=useState([]);
+
+  const [nameValue, setNameValue] = useState('')
+  const [tagId, setTagId] = useState('')
+  const [categoryId, setcategoryId] = useState('')
+
+
+  
+  const getNameValue=(input)=>{
+    setNameValue(input.target.value)
+    getRecipes(1,input.target.value,tagId,categoryId)
+  }
+  const getTagValue=(input)=>{
+    setTagId(input.target.value)
+    getRecipes(1,nameValue,input.target.value,categoryId)
+  }
+  const getCategValue=(input)=>{
+    setcategoryId(input.target.value)
+    getRecipes(1,nameValue,tagId,input.target.value)
+  }
+  
+  const updateParams =(value)=>{
+   getRecipes(value);
+   };
+
 
   const handleClose = () => setShow(false);
 
@@ -28,23 +59,29 @@ export default function RecipesList() {
     handleClose();
   }
 
-  let getRecipes = async()=>{
+  let getRecipes = async(pageNumber,name,tagId,categoryId)=>{
     try{
       let response= await axiosInstance.get(RECIPE_URL.GET_RECIPES,{
         params:{
-          pageSize:10,
-          pageNumber:1
+          pageSize:5,
+          pageNumber:pageNumber,
+          name:name,
+          tagId:tagId,
+          categoryId:categoryId
+
         }
       })
       console.log(response.data.data)
+      setArrayOfPages(()=>Array(response.data.totalNumberOfPages).fill().map((_,i)=>i+1))
       setRecipesItems(response.data.data)
     }catch(error){
       console.log(error)
     } 
   }
 
+
   useEffect(()=>{
-    getRecipes();
+    getRecipes(1);
   },[])
 
   return (
@@ -71,7 +108,35 @@ export default function RecipesList() {
             </div>
             <Link to='/recipes/new-recipe' className='btn btn-success'>Add New Recipe</Link>
           </div>
-          
+
+          {/*Filteration */}
+          <div className='row'>
+            <div className='col-md-6 mb-4'>
+              <input 
+                type="text" 
+                placeholder='Search here...'  
+                className='w-100 filter-input'
+                onChange={getNameValue}
+                />
+            </div>
+            <div className='col-md-3'>
+              <select className='w-100 filter-input' onChange={getTagValue} >
+                <option value=''>tag</option>
+                {TagsQuery?.tags?.map(({id,name})=>
+                            <option key={id} value={id}>{name}</option>
+                        )}
+              </select>
+            </div>
+            <div className='col-md-3'>
+              <select className='w-100 filter-input' onChange={getCategValue} >
+                  <option value=''>category</option>
+                  {categoriesQuery?.categories?.data?.map(({id,name})=>
+                            <option key={id} value={id}>{name}</option>
+                  )}
+                </select>
+            </div>
+          </div>
+
           <table className="table table-striped me-2 ">
             <thead className="border-light table-head">
               <tr >
@@ -88,7 +153,7 @@ export default function RecipesList() {
               { recipesItems.length>0?recipesItems.map((recipe)=>
                   <tr key={recipe.id}>
                     <td>{recipe.name}</td>
-                    <td>{recipe.imagePath?<img src={`${baseImageURL}/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/>:''}</td>
+                    <td>{recipe.imagePath?<img src={`${baseImageURL}/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/>:<img src={noImage} style={{width:'56px',borderRadius:'8px'}}/>}</td>
                     <td>{recipe.price}</td>
                     <td>{recipe.description}</td>
                     <td>{recipe.tag.name}</td>
@@ -112,6 +177,9 @@ export default function RecipesList() {
               ):<tr><td colSpan={7} className='py-3'><NoData/></td></tr>} 
             </tbody>
           </table>
+          {/*pagination */}
+          <Pagination arrayOfPages={arrayOfPages} updateParams={updateParams}/>
+
       </>
     
 

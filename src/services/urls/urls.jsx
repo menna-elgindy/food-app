@@ -38,7 +38,9 @@ export const USERS_URLS ={
     RESET_PASSWORD:`/Users/Reset`,
     VERIFY_USER:`/Users/verify`,
     GET_CURRENTUSER:`/Users/currentUser`,
-    GET_USER:(id)=>`/Users/${id}`
+    GET_USER:(id)=>`/Users/${id}`,
+    GET_USERS:`/Users`,
+    DELETE_USER:(id)=>`/Users/${id}`
 
 }
 
