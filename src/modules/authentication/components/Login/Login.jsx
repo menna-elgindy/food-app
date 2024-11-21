@@ -1,12 +1,14 @@
-import React ,{useState}from 'react'
+import React ,{useContext, useState}from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify';
 import { axiosInstance, USERS_URLS } from '../../../../services/urls/urls';
 import { Email_VALIDATION } from '../../../../services/urls/validations';
+import { AuthContext } from '../../../../context/AuthContext/AuthContext';
 
 
-export default function Login({saveLoginData}) {
+export default function Login() {
+  let{saveLoginData}= useContext(AuthContext)
   let {register,formState:{errors,isSubmitting},handleSubmit} = useForm();
   let navigate = useNavigate();
   let [showPassword,setShowPassword]=useState(false);

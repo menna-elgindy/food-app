@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/home-img.png'
+import { AuthContext } from '../../../../context/AuthContext/AuthContext'
 
-export default function Dashboard({loginData}) {
+export default function Dashboard() {
+  let {loginData}=useContext(AuthContext)
   return (
     <>
       <Header

@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import logo from '../../../../assets/imgs/app-logo.png'
+import { AuthContext } from '../../../../context/AuthContext/AuthContext';
 
-export default function SideBar({setLoginData,setCurrentUser}) {
+export default function SideBar() {
+  let {loginData,setLoginData,setCurrentUser}=useContext(AuthContext);
+
   const [isCollapse,setIsCollapse]=useState(false);
-
   let toggleCollapse = ()=>{
     setIsCollapse(!isCollapse)
   }
@@ -24,21 +26,26 @@ export default function SideBar({setLoginData,setCurrentUser}) {
               icon={<i className="fa fa-home" aria-hidden="true"></i>}
               > Home
             </MenuItem>
-            <MenuItem
+            {loginData?.userGroup !='SystemUser'?(<MenuItem
                component={<Link to='/users'/>} 
                icon={<i className="fa-solid fa-users"></i>}
                > Users
-            </MenuItem>
+            </MenuItem>):('')}
             <MenuItem 
               component={<Link to='/recipes'/>}
               icon={<i className="fa-solid fa-table-cells-large"></i>}
               > Recipes
             </MenuItem>
-            <MenuItem 
+            {loginData?.userGroup !='SystemUser'?<MenuItem 
               component={<Link to='/categories'/>} 
               icon={<i className="fa-regular fa-calendar-days"></i>}
               > Categories
-            </MenuItem>
+            </MenuItem>:('')}
+            {loginData?.userGroup =='SystemUser'?<MenuItem 
+              component={<Link to='/favorites'/>} 
+              icon={<i class="fa-regular fa-heart"></i>}
+              > Favorites
+            </MenuItem>:('')}
               <MenuItem 
               icon={<i className="fa-solid fa-unlock"></i>}
               > Change Password

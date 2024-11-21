@@ -1,14 +1,14 @@
 import React from 'react'
 import Navbar from '../Navbar/Navbar'
 import { Outlet } from 'react-router-dom'
-import SideBar from '../Sidebar/Sidebar'
+import SideBar from '../SideBar/SideBar'
 
-export default function MasterLayout({loginData,setLoginData,currentUser,setCurrentUser}) {
+export default function MasterLayout() {
   return (
     <div className='d-flex'>
-        <div className='sidebar-color' ><SideBar setLoginData={setLoginData} setCurrentUser={setCurrentUser}/></div>
+        <div className='sidebar-color' ><SideBar/></div>
         <div className='w-100 px-2'> 
-            <Navbar loginData={loginData} currentUser={currentUser} />
+            <Navbar/>
             <Outlet/>
         </div>
     </div>

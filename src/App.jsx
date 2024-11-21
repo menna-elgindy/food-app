@@ -16,48 +16,15 @@ import RecipesData from './modules/recipes/components/RecipesData/RecipesData'
 import CategoryData from './modules/categories/components/CategoryData/CategoryData'
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect, useState } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import ProtectedRoute from './modules/shared/components/ProtectedRoute/ProtectedRoute'
 import RecipeForm from './modules/recipes/components/RecipeForm/RecipeForm'
 import VerifyUser from './modules/authentication/components/VerfiyUser/VerifyUser'
-import { axiosInstance, USERS_URLS } from './services/urls/urls'
+import Favorites from './modules/Favorites/components/Favorites/Favorites'
+import UserProtectedRoute from './modules/shared/components/UserProtectedRoute/UserProtectedRoute'
+
 
 
 function App() {
-
-  const[loginData,setLoginData]=useState(null);
-
-  let saveLoginData = ()=>{
-    let decodedToken = localStorage.getItem('token');
-    let encodedToken = jwtDecode(decodedToken);
-    setLoginData(encodedToken)
-    getCurrentUser()
-    console.log(loginData)
-
-  }
-
-  const[currentUser,setCurrentUser]= useState(null);
-
-  const getCurrentUser =async()=>{
-   
-    try{
-      const response = await axiosInstance.get(USERS_URLS.GET_CURRENTUSER)
-      setCurrentUser(response.data) 
-      console.log(response.data)
-    }catch(error){
-      console.log(error)
-    }
-  }
-
-
-  useEffect(()=>{
-    if(localStorage.getItem('token')){//if logged in
-      saveLoginData()
-    } 
-
-    console.log(loginData)
-  },[])
 
   const routes = createBrowserRouter([
     {
@@ -65,8 +32,8 @@ function App() {
       element:<AuthLayout/>,
       errorElement:<NotFound/>,
       children:[
-        {index:true,element:<Login saveLoginData={saveLoginData} />},
-        {path:'login',element:<Login saveLoginData={saveLoginData}/>},
+        {index:true,element:<Login />},
+        {path:'login',element:<Login/>},
         {path:'register',element:<Registeration />},
         {path:'verify',element:<VerifyUser/>},
         {path:'forget-password',element:<ForgetPass/>},
@@ -78,19 +45,20 @@ function App() {
     {
       path:'',
       element:(
-        <ProtectedRoute loginData={loginData}>
-          <MasterLayout loginData={loginData} setLoginData={setLoginData} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
+        <ProtectedRoute >
+          <MasterLayout/>
         </ProtectedRoute>
       ),
       errorElement:<NotFound/>,
       children:[
-        {path:'dashboard',element:<Dashboard loginData={loginData}/>},
+        {path:'dashboard',element:<Dashboard/>},
         {path:'recipes',element:<RecipesList/>},
-        {path:'recipes/new-recipe',element:<RecipeForm/>},
-        {path:'recipes/:recipeId',element:<RecipeForm/>},
+        {path:'recipes/new-recipe',element:<UserProtectedRoute><RecipeForm/></UserProtectedRoute>},
+        {path:'recipes/:recipeId',element:<UserProtectedRoute><RecipeForm/></UserProtectedRoute>},
         {path:'recipe-data',element:<RecipesData/>},
-        {path:'categories',element:<CategoryList/>},
-        {path:'category-data',element:<CategoryData/>},
+        {path:'favorites',element:<Favorites/>},
+        {path:'categories',element:(<UserProtectedRoute><CategoryList/></UserProtectedRoute>)},
+        {path:'category-data',element:(<UserProtectedRoute><CategoryData/></UserProtectedRoute>)},
         {path:'users',element:<UsersList/>}
         
       ]
