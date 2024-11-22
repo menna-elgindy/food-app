@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect, useContext} from 'react'
 import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
 import noImage from '../../../../assets/imgs/no-img.jpg'
@@ -9,8 +9,10 @@ import { Link } from 'react-router-dom';
 import Pagination from '../../../shared/components/Pagination/Pagination';
 import useCategories from '../../../categories/hooks/useCategories';
 import useTags from '../../../../hooks/useTags';
+import { AuthContext } from '../../../../context/AuthContext/AuthContext';
 
 export default function RecipesList() {
+  let {loginData}= useContext(AuthContext);
   const categoriesQuery = useCategories(100)
   const TagsQuery = useTags();
   const [recipesItems,setRecipesItems]= useState([]);
@@ -106,7 +108,7 @@ export default function RecipesList() {
               </h5>
               <p>You can check all details</p>
             </div>
-            <Link to='/recipes/new-recipe' className='btn btn-success'>Add New Recipe</Link>
+            {loginData?.userGroup !='SystemUser'?<Link to='/recipes/new-recipe' className='btn btn-success'>Add New Recipe</Link>:('')}
           </div>
 
           {/*Filteration */}
@@ -164,11 +166,18 @@ export default function RecipesList() {
                             <button className="btn btn-light border-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i className="fa-solid fa-ellipsis"></i>
                             </button>
-                
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              {loginData?.userGroup !='SystemUser'?
+                              <>
                               <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
                               <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i><Link to ={`/recipes/${recipe?.id}`} style={{textDecoration:'none',color:'#212529'}}> Edit</Link></li>
-                              <li onClick={()=>handleShow(recipe.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
+                              <li onClick={()=>handleShow(recipe.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li> 
+                              </>
+                              
+                              :
+                              <li className="dropdown-item" ><i class="fa-solid fa-heart"></i> Favorites</li>
+
+                            }  
                             </ul>
                             
                        </div>
