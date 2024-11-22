@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
 import { axiosInstance, CATEGORY_URLS } from '../../../../services/urls/urls';
 import NoData from '../../../shared/components/NoData/NoData';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import { ModalTitle } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import useCategories from '../../hooks/useCategories';
 import Pagination from '../../../shared/components/Pagination/Pagination';
+import EditConfirmation from '../../../shared/components/EditConfirmation/EditConfirmation';
 
 
 
 export default function CategoryList() {
-  let {register,formState:{errors,isSubmitting},handleSubmit} = useForm();
-
 
   const categoriesQuery = useCategories(1)
   const [selectedId, setSelectedId] =useState(null);
-
-
-
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -39,8 +31,8 @@ export default function CategoryList() {
 
   const [showEdit, setShowEdit] = useState(false);
   const handleCloseEdit = () => setShowEdit(false);
-  const handleShowEdit = (id) => {
-    setSelectedId(id)
+  const handleShowEdit = (id,name) => {
+    setSelectedId(id);
     setShowEdit(true);
   }
 
@@ -95,67 +87,20 @@ export default function CategoryList() {
             show={show}
           /> 
           {/*Add Modal*/ }
-          <Modal show={showAdd} onHide={handleCloseAdd} >
-              <Modal.Header closeButton>
-                <ModalTitle>Add category</ModalTitle>
-              </Modal.Header>
-              <Modal.Body style={{borderTop:'none'}}>
-              <form onSubmit={handleSubmit(onSubmitAdd)} style={{height:'250px'}}>
-                <div className="input-group mt-3 " >
-                  <input 
-                    type="text" 
-                    className="form-control  my-2" 
-                    style={{backgroundColor: '#F7F7F7',border:'none'}}
-                    placeholder="Category Name" 
-                    aria-label="name" 
-                    aria-describedby="basic-addon1"
-                    {...register('name',{
-                      required:'Name is required'
-                    })}
-                    />
-                </div>
-                {errors.name&&<span className='text-danger'>{errors.name.message}</span>}
-                <button 
-                   className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
-                   style={{position:'absolute' ,bottom:'24px',right:'24px'}}
-                    disabled={isSubmitting}
-                >
-                  {isSubmitting?'...Loading':'Save'}
-                </button>
-              </form>
-              </Modal.Body>
-            </Modal>
+          <EditConfirmation
+            modalName={'Add'}
+            submitFun={onSubmitAdd}
+            handleClose={handleCloseAdd}
+            show={showAdd}
+          />
           {/*Edit Modal */}
-          <Modal show={showEdit} onHide={handleCloseEdit} >
-              <Modal.Header closeButton>
-                <ModalTitle>Edit category</ModalTitle>
-              </Modal.Header>
-              <Modal.Body style={{borderTop:'none'}}>
-              <form onSubmit={handleSubmit(onSubmitEdit)} style={{height:'250px'}}>
-                <div className="input-group mt-3 " >
-                  <input 
-                    type="text" 
-                    className="form-control  my-2" 
-                    style={{backgroundColor: '#F7F7F7',border:'none'}}
-                    placeholder="Category Name" 
-                    aria-label="name" 
-                    aria-describedby="basic-addon1"
-                    {...register('name',{
-                      required:'Name is required'
-                    })}
-                    />
-                </div>
-                {errors.name&&<span className='text-danger'>{errors.name.message}</span>}
-                <button 
-                   className='btn btn-success w-25 text-white rounded rounded-2 border-0 mt-5 mb-3 py-2'
-                   style={{position:'absolute' ,bottom:'24px',right:'24px'}}
-                    disabled={isSubmitting}
-                >
-                  {isSubmitting?'...Loading':'Save'}
-                </button>
-              </form>
-              </Modal.Body>
-            </Modal>
+          <EditConfirmation
+            modalName={'Edit'}
+            submitFun={onSubmitEdit}
+            handleClose={handleCloseEdit}
+            show={showEdit}
+          />
+          
           <div className='d-flex justify-content-between align-items-center mt-2'>
             <div>
               <h5 className='mb-0'>
@@ -199,7 +144,7 @@ export default function CategoryList() {
                 
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
-                              <li onClick={()=>handleShowEdit(category.id)} className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
+                              <li onClick={()=>handleShowEdit(category.id,category.name)} className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
                               <li onClick={()=>handleShow(category.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
                             </ul>
                             

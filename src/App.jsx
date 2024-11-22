@@ -12,7 +12,6 @@ import NotFound from './modules/shared/components/NotFound/NotFound'
 import AuthLayout from './modules/shared/components/AuthLayout/AuthLayout'
 import MasterLayout from './modules/shared/components/MasterLayout/MasterLayout'
 import Dashboard from './modules/Dashboard/components/Dashboard/Dashboard'
-import RecipesData from './modules/recipes/components/RecipesData/RecipesData'
 import CategoryData from './modules/categories/components/CategoryData/CategoryData'
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -38,7 +37,6 @@ function App() {
         {path:'verify',element:<VerifyUser/>},
         {path:'forget-password',element:<ForgetPass/>},
         {path:'reset-password',element:<ResetPass/>},
-        {path:'change-password',element:<ChangePass/>}
         
       ]
     },
@@ -55,7 +53,6 @@ function App() {
         {path:'recipes',element:<RecipesList/>},
         {path:'recipes/new-recipe',element:<UserProtectedRoute><RecipeForm/></UserProtectedRoute>},
         {path:'recipes/:recipeId',element:<UserProtectedRoute><RecipeForm/></UserProtectedRoute>},
-        {path:'recipe-data',element:<RecipesData/>},
         {path:'favorites',element:<Favorites/>},
         {path:'categories',element:(<UserProtectedRoute><CategoryList/></UserProtectedRoute>)},
         {path:'category-data',element:(<UserProtectedRoute><CategoryData/></UserProtectedRoute>)},
