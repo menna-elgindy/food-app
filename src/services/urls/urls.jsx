@@ -44,6 +44,14 @@ export const USERS_URLS ={
 
 }
 
+//User Recipes
+export const USER_RECIPES_URL ={
+    GET_FAVORITES:`/userRecipe/`,
+    ADD_TO_FAV:`/userRecipe/`,
+    DELETE_FROM_FAV:(id)=>`/userRecipe/${id}`,
+}
+
+
 //TAGS
 
 export const TAGS_URLS ={

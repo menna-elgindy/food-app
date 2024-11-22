@@ -3,13 +3,17 @@ import Header from '../../../shared/components/Header/Header'
 import image from '../../../../assets/imgs/recipes-img.png'
 import noImage from '../../../../assets/imgs/no-img.jpg'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation';
-import { axiosInstance, baseImageURL, RECIPE_URL } from '../../../../services/urls/urls';
+import { axiosInstance, baseImageURL, RECIPE_URL, USER_RECIPES_URL } from '../../../../services/urls/urls';
 import NoData from '../../../shared/components/NoData/NoData';
 import { Link } from 'react-router-dom';
 import Pagination from '../../../shared/components/Pagination/Pagination';
 import useCategories from '../../../categories/hooks/useCategories';
 import useTags from '../../../../hooks/useTags';
 import { AuthContext } from '../../../../context/AuthContext/AuthContext';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { ModalTitle } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 export default function RecipesList() {
   let {loginData}= useContext(AuthContext);
@@ -23,6 +27,14 @@ export default function RecipesList() {
   const [nameValue, setNameValue] = useState('')
   const [tagId, setTagId] = useState('')
   const [categoryId, setcategoryId] = useState('')
+
+  const [selectedIdFav, setSelectedIdFav] =useState(null)
+  const [showFav, setShowFav] = useState(false);
+  const handleCloseFav = () => setShowFav(false);
+  const handleShowFav = (id) => {
+    setSelectedIdFav(id)
+    setShowFav(true);
+  }
 
 
   
@@ -54,7 +66,7 @@ export default function RecipesList() {
   const deleteRecipe =async()=>{
     try{
       let response =await axiosInstance.delete(RECIPE_URL.DELETE_RECIPE(selectedId))
-      getRecipes()
+      getRecipes(1)
     }catch(error){
       console.log(error)
     }
@@ -80,6 +92,20 @@ export default function RecipesList() {
       console.log(error)
     } 
   }
+  let addToFav = async(id)=>{
+    try{
+      let response= await axiosInstance.post(USER_RECIPES_URL.ADD_TO_FAV,{
+        
+         recipeId:id
+        })
+      console.log(response.data.data)
+      getRecipes(1)
+      toast.success('Recipe Added to Favorites')
+    }catch(error){
+      toast.error(error.response.data.message)
+    } 
+    handleCloseFav()
+  }
 
 
   useEffect(()=>{
@@ -100,6 +126,21 @@ export default function RecipesList() {
             handleClose={handleClose}
             show={show}
           /> 
+
+          {/*Add to fav Modal*/ }
+          <Modal show={showFav} onHide={handleCloseFav} >
+              <Modal.Header closeButton>
+                <ModalTitle>Add Recipe To Favorites</ModalTitle>
+              </Modal.Header>
+              <Modal.Body style={{borderTop:'none'}}>
+              <p>Are you sure you want to add this recipe to Favorites</p>
+              </Modal.Body>
+              <Modal.Footer>
+                  <Button className="btn btn-outline-success"variant='button' onClick={()=>addToFav(selectedIdFav)}>
+                    Add
+                  </Button>
+              </Modal.Footer>
+            </Modal>
 
           <div className='d-flex justify-content-between align-items-center mt-2 mx-3'>
             <div>
@@ -175,7 +216,7 @@ export default function RecipesList() {
                               </>
                               
                               :
-                              <li className="dropdown-item" ><i class="fa-solid fa-heart"></i> Favorites</li>
+                              <li className="dropdown-item" onClick={()=>handleShowFav(recipe.id)} ><i class="fa-solid fa-heart"></i> Favorites</li>
 
                             }  
                             </ul>
