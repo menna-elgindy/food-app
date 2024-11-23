@@ -9,6 +9,7 @@ import useCategories from '../../hooks/useCategories';
 import Pagination from '../../../shared/components/Pagination/Pagination';
 import EditConfirmation from '../../../shared/components/EditConfirmation/EditConfirmation';
 import { format } from 'date-fns';
+import { Modal, ModalTitle } from 'react-bootstrap';
 
 
 
@@ -17,12 +18,20 @@ export default function CategoryList() {
   const categoriesQuery = useCategories(1)
   console.log(categoriesQuery.categories)
   const [selectedId, setSelectedId] =useState(null);
+  const [selectedItem, setSelectedItem] =useState(null);
+
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = (id) => {
     setSelectedId(id)
     setShow(true);
+  }
+  const [showView, setShowView] = useState(false);
+  const handleCloseView = () => setShowView(false);
+  const handleShowView = (item) => {
+    setSelectedItem(item)
+    setShowView(true);
   }
 
   const [showAdd, setShowAdd] = useState(false);
@@ -105,6 +114,21 @@ export default function CategoryList() {
             handleClose={handleCloseEdit}
             show={showEdit}
           />
+
+          {/*view modal*/}
+          <Modal show={showView} onHide={handleCloseView}>
+            <Modal.Header closeButton>
+              <ModalTitle>
+               View Category
+              </ModalTitle>
+            </Modal.Header>
+            <Modal.Body style={{borderTop:'none'}}>
+                <div className='text-center'>
+                  <h3>Name: {selectedItem?.name}</h3>
+                  <p>Creation Date: {selectedItem?.creationDate} </p>
+                </div>
+            </Modal.Body>
+          </Modal>
           
           <div className='d-flex justify-content-between align-items-center mt-2'>
             <div>
@@ -148,8 +172,8 @@ export default function CategoryList() {
                             </button>
                 
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
-                              <li onClick={()=>handleShowEdit(category.id,category.name)} className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
+                              <li className="dropdown-item" onClick={()=>handleShowView(category)}><i className="fa-regular fa-eye text-success"></i> View</li>
+                              <li onClick={()=>handleShowEdit(category.id)} className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i> Edit</li>
                               <li onClick={()=>handleShow(category.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
                             </ul>
                             

@@ -35,6 +35,13 @@ export default function RecipesList() {
     setSelectedIdFav(id)
     setShowFav(true);
   }
+  const [selectedItem, setSelectedItem] =useState(null);
+  const [showView, setShowView] = useState(false);
+  const handleCloseView = () => setShowView(false);
+  const handleShowView = (item) => {
+    setSelectedItem(item)
+    setShowView(true);
+  }
 
 
   
@@ -142,6 +149,26 @@ export default function RecipesList() {
               </Modal.Footer>
             </Modal>
 
+          {/*view modal*/}
+          <Modal show={showView} onHide={handleCloseView}>
+            <Modal.Header closeButton>
+              <ModalTitle>
+               View Recipe
+              </ModalTitle>
+            </Modal.Header>
+            <Modal.Body style={{borderTop:'none'}}>
+                <div className='text-start'>
+                {selectedItem?.imagePath?<img src={`${baseImageURL}/${selectedItem?.imagePath}`} style={{width:'100px',borderRadius:'8px'}}/>:
+                <img src={noImage} style={{width:'100px',borderRadius:'8px'}}/>}
+                  <h3>Name: {selectedItem?.name}</h3>
+                  <p>Description: {selectedItem?.description} </p>
+                  <p>Tag Name: {selectedItem?.tag.name} </p>
+                  <p>Category Name: {selectedItem?.category[0]?.name} </p>
+                  <p>Price: {selectedItem?.price} EGP </p>
+                </div>
+            </Modal.Body>
+          </Modal>
+
           <div className='d-flex justify-content-between align-items-center mt-2 mx-3'>
             <div>
               <h5 className='mb-0'>
@@ -194,13 +221,13 @@ export default function RecipesList() {
             </thead>
          <tbody>
               { recipesItems.length>0?recipesItems.map((recipe)=>
-                  <tr key={recipe.id}>
-                    <td>{recipe.name}</td>
-                    <td>{recipe.imagePath?<img src={`${baseImageURL}/${recipe.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/>:<img src={noImage} style={{width:'56px',borderRadius:'8px'}}/>}</td>
-                    <td>{recipe.price}</td>
-                    <td>{recipe.description}</td>
-                    <td>{recipe.tag.name}</td>
-                    <td>{recipe.category[0]?.name}</td>
+                  <tr key={recipe?.id}>
+                    <td>{recipe?.name}</td>
+                    <td>{recipe?.imagePath?<img src={`${baseImageURL}/${recipe?.imagePath}`} style={{width:'56px',borderRadius:'8px'}}/>:<img src={noImage} style={{width:'56px',borderRadius:'8px'}}/>}</td>
+                    <td>{recipe?.price}</td>
+                    <td>{recipe?.description}</td>
+                    <td>{recipe?.tag.name}</td>
+                    <td>{recipe?.category[0]?.name}</td>
                     <td>
                       {/*Actions Dropdown*/}
                       <div className="dropdown">
@@ -210,7 +237,7 @@ export default function RecipesList() {
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               {loginData?.userGroup !='SystemUser'?
                               <>
-                              <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
+                              <li onClick={()=>handleShowView(recipe)} className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
                               <li className="dropdown-item" ><i className="fa fa-edit text-success" aria-hidden="true" ></i><Link to ={`/recipes/${recipe?.id}`} style={{textDecoration:'none',color:'#212529'}}> Edit</Link></li>
                               <li onClick={()=>handleShow(recipe.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li> 
                               </>
