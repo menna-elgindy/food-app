@@ -40,7 +40,8 @@ export const USERS_URLS ={
     GET_CURRENTUSER:`/Users/currentUser`,
     GET_USER:(id)=>`/Users/${id}`,
     GET_USERS:`/Users`,
-    DELETE_USER:(id)=>`/Users/${id}`
+    DELETE_USER:(id)=>`/Users/${id}`,
+    CHANGE_PASSWORD:`/Users/ChangePassword`
 
 }
 

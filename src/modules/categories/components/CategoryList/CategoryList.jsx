@@ -8,12 +8,14 @@ import { toast } from 'react-toastify';
 import useCategories from '../../hooks/useCategories';
 import Pagination from '../../../shared/components/Pagination/Pagination';
 import EditConfirmation from '../../../shared/components/EditConfirmation/EditConfirmation';
+import { format } from 'date-fns';
 
 
 
 export default function CategoryList() {
 
   const categoriesQuery = useCategories(1)
+  console.log(categoriesQuery.categories)
   const [selectedId, setSelectedId] =useState(null);
 
   const [show, setShow] = useState(false);
@@ -35,7 +37,10 @@ export default function CategoryList() {
     setSelectedId(id);
     setShowEdit(true);
   }
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, "MMMM do, yyyy 'at' h:mm:ss a (zzz)");
+  };
   
   const deleteCategory =async()=>{
     try{
@@ -134,7 +139,7 @@ export default function CategoryList() {
           {categoriesQuery?.categories?.data?.length>0?categoriesQuery?.categories?.data.map((category)=>
                   <tr key={category?.id}>
                     <td>{category?.name}</td>
-                    <td>{category?.creationDate}</td>
+                    <td>{formatDate(category?.creationDate)}</td>
                     <td>
                       {/*Actions Dropdown*/}
                       <div className="dropdown">
