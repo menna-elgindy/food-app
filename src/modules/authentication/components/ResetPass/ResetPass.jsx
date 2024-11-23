@@ -10,7 +10,10 @@ import { Email_VALIDATION, PASSWORD_VALIDATION } from '../../../../services/urls
 export default function ResetPass() {
   let {register,setValue,formState:{errors,isSubmitting},handleSubmit,watch,trigger} = useForm({mode:'onChange'});
   let navigate = useNavigate();
-  let [storedEmail, setStoredEmail]=useState('')
+  let [storedEmail, setStoredEmail]=useState(()=>{
+    if(sessionStorage.getItem('email'))
+      setValue('email',sessionStorage.getItem('email'))
+  })
   let [showPassword,setShowPassword]=useState(false);
 
   const togglePasswordVisibility =()=>{
@@ -27,17 +30,13 @@ export default function ResetPass() {
         toast.error(error.response.data.message)
       }
   }
-  useEffect(()=>{// populate the email from prevoius step
-    setStoredEmail(sessionStorage.getItem('email'))
-    if(storedEmail){
-      setValue('email',storedEmail)
-    }
-  },[storedEmail,setValue])
 
+let password =watch('password')
+let confirmPassword=watch('confirmPassword')
  useEffect(()=>{
-    if(watch('confirmPassword'))
+    if(confirmPassword)
     trigger('confirmPassword')
-  },[watch('password'),watch('confirmPassword'),trigger])
+  },[password,confirmPassword,trigger])
 
   return (  
             <>
@@ -121,7 +120,7 @@ export default function ResetPass() {
                     {...register('confirmPassword',{
                       required:'Confirm password is required',
                       validate:(confirmPassword)=>{
-                        return confirmPassword == watch('password')?true:'Passwords do not match'
+                        return confirmPassword == password?true:'Passwords do not match'
                       }
                     })}
                     />

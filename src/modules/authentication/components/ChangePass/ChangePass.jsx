@@ -25,10 +25,13 @@ export default function ChangePass({handleClose,show}) {
       }
       handleClose()
   }
+
+let password =watch('newPassword')
+let confirmPassword=watch('confirmNewPassword')
   useEffect(()=>{
-    if(watch('confirmNewPassword'))
+    if(confirmPassword)
     trigger('confirmNewPassword')
-  },[watch('newPassword'),watch('confirmNewPassword'),trigger])
+  },[password,confirmPassword,trigger])
 
   return (
     <>
@@ -117,7 +120,7 @@ export default function ChangePass({handleClose,show}) {
                     {...register('confirmNewPassword',{
                       required:'Confirm new password is required',
                       validate:(confirmNewPassword)=>{
-                        return confirmNewPassword == watch('newPassword')?true:'Passwords do not match'
+                        return confirmNewPassword == password?true:'Passwords do not match'
                       }
                     })}
                     />

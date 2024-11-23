@@ -11,6 +11,9 @@ body{
 .overlay{
     background-image: linear-gradient(51.22deg, rgba(47, 140, 96, 0.63) -22.39%, rgba(0, 0, 0, 0.6237) 61.76%);;
 }
+.auth-form-container{
+    min-height: 100vh;
+}
 .form-control{
     background: #F7F7F7;
     color: #8391A1;
@@ -154,3 +157,24 @@ body{
     border-radius: 8px;
     padding: 1rem;
 }
+.notFound-container{
+   background-color: white;
+    height: 100vh;
+    width: 100vw;
+
+}
+.notFound-bg{
+    z-index: 1;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.notFound-content{
+    padding-inline: 6.5rem;
+    padding-block: 2.25rem;
+    position: absolute;
+    z-index: 2;
+}
+.notFound-text{
+    margin-top: 155px;}

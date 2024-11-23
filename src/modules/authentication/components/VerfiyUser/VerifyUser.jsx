@@ -8,15 +8,10 @@ import { toast } from 'react-toastify';
 export default function VerifyUser() {
     let {register,setValue,formState:{errors,isSubmitting},handleSubmit} = useForm({mode:'onChange'});
     let navigate = useNavigate();
-    let [storedEmail, setStoredEmail]=useState('')
-
-
-    useEffect(()=>{// populate the email from prevoius step
-        setStoredEmail(sessionStorage.getItem('email'))
-        if(storedEmail){
-          setValue('email',storedEmail)
-        }
-      },[storedEmail,setValue])
+    let [storedEmail, setStoredEmail]=useState(()=>{
+      if(sessionStorage.getItem('email'))
+        setValue('email',sessionStorage.getItem('email'))
+    })
 
     const onSubmit =async(data)=>{
         try{

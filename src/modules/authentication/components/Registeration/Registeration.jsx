@@ -56,10 +56,12 @@ export default function Registeration() {
     }
   }
 
+let password =watch('password')
+let confirmPassword=watch('confirmPassword')
     useEffect(()=>{
-      if(watch('confirmPassword'))
+      if(confirmPassword)
       trigger('confirmPassword')
-    },[watch('password'),watch('confirmPassword'),trigger])
+    },[password,confirmPassword,trigger])
   return (
     <>
     <div className='title my-4'>
@@ -67,110 +69,124 @@ export default function Registeration() {
          <span className='text-muted'>Welcome Back! Please enter your details</span>
     </div>
     <form onSubmit={handleSubmit(onSubmit)}>
-    <div className='d-flex justify-content-between'>
-      <div>
-      {/*user name */}
-      <div className="input-group mt-3">
-          <span className="input-group-text" id="basic-addon1">
-          <i class="fa-solid fa-mobile-screen icon-line"></i>
-          </span>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="UserName" 
-            aria-label="user name" 
-            aria-describedby="basic-addon1"
-            {...register('userName',{
-              required:'User Name is required',
-              pattern:{
-                value:/^(?=\D*\d)[a-zA-Z0-9]{4,}$/,
-                message:'The userName must be least 4 characters contain characters and end with numbers without spaces.'
-              }
-            })}
-            />
+     <div className=' row d-flex' >        
+        {/*user name */}
+        <div className='col'>
+          <div className="input-group mt-3 ">
+              <span className="input-group-text" id="basic-addon1">
+              <i class="fa-solid fa-mobile-screen icon-line"></i>
+              </span>
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="UserName" 
+                aria-label="user name" 
+                aria-describedby="basic-addon1"
+                {...register('userName',{
+                  required:'User Name is required',
+                  pattern:{
+                    value:/^(?=\D*\d)[a-zA-Z0-9]{4,}$/,
+                    message:'The userName must be least 4 characters contain characters and end with numbers without spaces.'
+                  }
+                })}
+                />
+          </div>
+            {errors.userName&&<span className='text-danger '>{errors.userName.message}</span>}
         </div>
-        {errors.userName&&<span className='text-danger '>{errors.userName.message}</span>}
+
+          {/*email */}
+          <div className='col'>
+            <div className="input-group mt-3 col">
+              <span className="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-mobile-screen icon-line"></i>
+              </span>
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="Enter your E-mail" 
+                aria-label="email" 
+                aria-describedby="basic-addon1"
+                {...register('email',Email_VALIDATION)}
+                />
+            </div>
+            {errors.email&&<span className='text-danger  '>{errors.email.message}</span>} 
+          </div>
+     </div>
+     <div className='row d-flex'>
         {/*country*/}
-        <div className="input-group mt-3">
-          <span className="input-group-text" id="basic-addon1">
-            <i class="fa-solid fa-mobile-screen icon-line"></i>
-          </span>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="Country" 
-            aria-label="country" 
-            aria-describedby="basic-addon1"
-            {...register('country',{
-              required:'Country is required'
-            })}
-            />
+        <div className='col'>
+        <div className="input-group mt-3 col">
+            <span className="input-group-text" id="basic-addon1">
+              <i class="fa-solid fa-mobile-screen icon-line"></i>
+            </span>
+            <input 
+              type="text" 
+              className="form-control" 
+              placeholder="Country" 
+              aria-label="country" 
+              aria-describedby="basic-addon1"
+              {...register('country',{
+                required:'Country is required'
+              })}
+              />
+          </div>
+          {errors.country&&<span className='text-danger '>{errors.country.message}</span>}
         </div>
-        {errors.country&&<span className='text-danger '>{errors.country.message}</span>}
-        {/*password*/}
-        <div className="input-group mt-3 ">
-          <span className="input-group-text" id="basic-addon1">
-            <i className="fa fa-lock icon-line" aria-hidden="true"></i>
-          </span>
-          <input 
-            type={showPassword?"text":"password" }
-            className="form-control border-right-0" 
-            placeholder="Password" 
-            aria-label="password" 
-            aria-describedby="basic-addon1"
-            {...register('password',PASSWORD_VALIDATION)}
-            />
-            <button
-              type ='button'
-              onClick={togglePasswordVisibility} 
-              onMouseDown={(e)=>{e.preventDefault}}
-              onMouseUp={(e)=>{e.preventDefault}}
-              className="input-group-text" id="basic-addon1"
-              >
-              <span className='sr-only'>{showPassword?'hide password':'show password'}</span>
-                <i 
-                  className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}
-                  aria-hidden='true'
-                >
-                </i>
-            </button>
-        </div>
-        {errors.password&&<span className='text-danger '>{errors.password.message}</span>}
-      </div>
-      <div>
-        {/*email */}
-        <div className="input-group mt-3">
-          <span className="input-group-text" id="basic-addon1">
-            <i class="fa-solid fa-mobile-screen icon-line"></i>
-          </span>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="Enter your E-mail" 
-            aria-label="email" 
-            aria-describedby="basic-addon1"
-            {...register('email',Email_VALIDATION)}
-            />
-        </div>
-        {errors.email&&<span className='text-danger '>{errors.email.message}</span>}
         {/*phone number */}
-        <div className="input-group mt-3">
-          <span className="input-group-text" id="basic-addon1">
-            <i class="fa-solid fa-mobile-screen icon-line"></i>
-          </span>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="PhoneNumber" 
-            aria-label="phone number" 
-            aria-describedby="basic-addon1"
-            {...register('phoneNumber',{
-              required:'Phone number is required'
-            })}
-            />
+        <div className='col'>
+          <div className="input-group mt-3">
+              <span className="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-mobile-screen icon-line"></i>
+              </span>
+              <input 
+                type="tel" 
+                className="form-control" 
+                placeholder="PhoneNumber" 
+                aria-label="phone number" 
+                aria-describedby="basic-addon1"
+                {...register('phoneNumber',{
+                  required:'Phone number is required'
+                })}
+                />
+            </div>
+            {errors.phoneNumber&&<span className='text-danger '>{errors.phoneNumber.message}</span>}
+        </div>         
+     </div>
+
+      <div className='row d-flex'>
+          {/*password*/}
+          <div className='col'>
+          <div className="input-group mt-3">
+            <span className="input-group-text" id="basic-addon1">
+              <i className="fa fa-lock icon-line" aria-hidden="true"></i>
+            </span>
+            <input 
+              type={showPassword?"text":"password" }
+              className="form-control border-right-0" 
+              placeholder="Password" 
+              aria-label="password" 
+              aria-describedby="basic-addon1"
+              {...register('password',PASSWORD_VALIDATION)}
+              />
+              <button
+                type ='button'
+                onClick={togglePasswordVisibility} 
+                onMouseDown={(e)=>{e.preventDefault}}
+                onMouseUp={(e)=>{e.preventDefault}}
+                className="input-group-text" id="basic-addon1"
+                >
+                <span className='sr-only'>{showPassword?'hide password':'show password'}</span>
+                  <i 
+                    className={`fa-regular ${showPassword?'fa-eye-slash':'fa-eye'} text-muted`}
+                    aria-hidden='true'
+                  >
+                  </i>
+              </button>
+          </div>
+          {errors.password&&<span className='text-danger '>{errors.password.message}</span>}
         </div>
-        {errors.phoneNumber&&<span className='text-danger '>{errors.phoneNumber.message}</span>}
         {/*Confirm password*/}
+        <div className='col'>
         <div className="input-group mt-3">
           <span className="input-group-text" id="basic-addon1">
             <i className="fa fa-lock icon-line" aria-hidden="true"></i>
@@ -184,7 +200,7 @@ export default function Registeration() {
             {...register('confirmPassword',{
               required:'Confirm password is required',
               validate:(confirmPassword)=>{
-                return confirmPassword == watch('password')?true:'Passwords do not match'
+                return confirmPassword == password?true:'Passwords do not match'
               }
             })}
             />
@@ -204,19 +220,9 @@ export default function Registeration() {
               </button>
         </div>
         {errors.confirmPassword&&<span className='text-danger '>{errors.confirmPassword.message}</span>}
+        </div>
       </div>
-    </div>
     {/*Profile image */}
-   { /*<div className='d-flex justify-content-between align-items-center'>
-      <div className=" mt-3">
-        <span>Profile Image</span>
-          <input 
-            type="file" 
-            aria-label="user image" 
-            aria-describedby="basic-addon1"
-            {...register('profileImage')}
-            />
-        </div>*/}
         <div className='text-end pt-3'>
             <div
                     {...getRootProps(  
@@ -258,7 +264,6 @@ export default function Registeration() {
         <Link to='/login' className='text-decoration-none text-success' >Login Now?</Link>
         </div>
                 
-    {/*</div>*/}
       <button
         className='btn btn-success w-100 text-white rounded rounded-2 border-0 my-3 py-2'
         disabled={isSubmitting}

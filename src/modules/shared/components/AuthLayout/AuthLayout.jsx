@@ -19,7 +19,7 @@ export default function AuthLayout() {
   {isAuthenticated && <h1 className='text-success text-center'>...Loading</h1>}
   {!isAuthenticated && <div className={location.pathname=='/register'?'':'auth-container'}>
       <div className='container-fluid overlay '>
-        <div className='row vh-100 justify-content-center align-items-center px-2'>
+        <div className='row justify-content-center align-items-center px-2 auth-form-container'>
           <div className={location.pathname=='/register'?'col-md-8 bg-white rounded rounded-2 px-5 py-3':'col-md-6 bg-white rounded rounded-2 px-5 py-3'}>
                 <div className='logo-container text-center '>
                     <img src={logo} className='w-50'/>
