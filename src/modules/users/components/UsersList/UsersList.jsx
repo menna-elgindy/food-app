@@ -5,6 +5,7 @@ import noImage from '../../../../assets/imgs/no-img.jpg'
 import { axiosInstance, baseImageURL, USERS_URLS } from '../../../../services/urls/urls'
 import NoData from '../../../shared/components/NoData/NoData'
 import DeleteConfirmation from '../../../shared/components/DeleteConfirmation/DeleteConfirmation'
+import { Modal, ModalTitle } from 'react-bootstrap'
 
 
 
@@ -19,6 +20,14 @@ export default function UsersList() {
   const handleShow = (id) => {
     setSelectedId(id)
     setShow(true);
+  }
+
+  const [selectedItem, setSelectedItem] =useState(null);
+  const [showView, setShowView] = useState(false);
+  const handleCloseView = () => setShowView(false);
+  const handleShowView = (item) => {
+    setSelectedItem(item)
+    setShowView(true);
   }
   
   const deleteUser =async()=>{
@@ -63,6 +72,25 @@ export default function UsersList() {
             handleClose={handleClose}
             show={show}
           /> 
+
+          {/*view modal */}
+          <Modal show={showView} onHide={handleCloseView}>
+              <Modal.Header closeButton>
+                <ModalTitle>
+                    View User
+                </ModalTitle>
+              </Modal.Header>
+              <Modal.Body style={{borderTop:'none'}}>
+                  <div className='text-start'>
+                  {selectedItem?.imagePath?<img src={`${baseImageURL}/${selectedItem?.imagePath}`} style={{width:'100px',borderRadius:'8px'}}/>:
+                  <img src={noImage} style={{width:'100px',borderRadius:'8px'}}/>}
+                    <h3>Name: {selectedItem?.userName}</h3>
+                    <p>Phone Number:{selectedItem?.phoneNumber}</p>
+                    <p>Email: {selectedItem?.email}</p>
+                    <p>Country: {selectedItem?.country}</p>
+                  </div>
+              </Modal.Body>
+            </Modal>
         
         <div className=' mt-2 mx-3'>
               <h5 className='mb-0'>
@@ -98,7 +126,7 @@ export default function UsersList() {
                             </button>
                 
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <li className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
+                              <li onClick={()=>handleShowView(user)}className="dropdown-item" ><i className="fa-regular fa-eye text-success"></i> View</li>
                               <li onClick={()=>handleShow(user.id)} className="dropdown-item"><i className="fa fa-trash text-success" aria-hidden="true"></i> Delete</li>  
                             </ul>
                             
