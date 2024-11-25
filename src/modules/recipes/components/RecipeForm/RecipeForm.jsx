@@ -203,7 +203,7 @@ export default function RecipeForm() {
                 {recipeImage && <p>Selected Image: {recipeImage?.name||recipeImage[0]?.name}</p>}
 
                 <div className='d-flex justify-content-end'>
-                    <Link to='/dashboard/recipes' className={styles['btn-primary-outline']}>Cancle</Link>
+                    <Link to='/recipes' className={styles['btn-primary-outline']}>Cancle</Link>
                     <button disabled={isSubmitting} type='submit' className={styles['btn-primary']}>
                         {isSubmitting?'...Loading':'Save'}
                     </button>
